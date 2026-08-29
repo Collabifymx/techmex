@@ -3,6 +3,7 @@ import { ProjectLikeButton } from "@/components/project-like-button";
 import { ExternalLinkIcon, InstagramIcon, TikTokIcon, XIcon } from "@/components/icons";
 import { socialKindLabel, socialUrl } from "@/lib/socials";
 import type { Company, ProjectComment, SocialNetwork } from "@/lib/types";
+import { FEATURED_PROJECT, isFeaturedProject } from "@/lib/featured";
 import { formatNumber, formatPlace, formatPublishedOn } from "@/lib/utils";
 
 export function ProjectProfile({
@@ -37,6 +38,11 @@ export function ProjectProfile({
           <p className="mono text-[11px] tracking-[0.18em] text-mint">
             01 / FICHA · TECHMEX
           </p>
+          {isFeaturedProject(company.slug) ? (
+            <p className="mono mt-2 text-[10px] tracking-[0.16em] text-mute">
+              DESTACADO DEL MES · {FEATURED_PROJECT.monthLabel.toUpperCase()}
+            </p>
+          ) : null}
           <h1 className="display mt-3 text-4xl text-white sm:text-6xl">
             {company.name}
           </h1>
