@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabase } from "@/lib/supabase";
+import { normalizeWebsiteUrl } from "@/lib/website-url";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,8 @@ export async function GET(
     .eq("status", "approved")
     .maybeSingle();
 
-  if (!data?.url) {
+  const target = data?.url ? normalizeWebsiteUrl(data.url) : null;
+  if (!target) {
     return NextResponse.redirect(new URL("/", _request.url));
   }
 
@@ -33,5 +35,5 @@ export async function GET(
     console.error("increment_company_clicks", error.message);
   }
 
-  return NextResponse.redirect(data.url, 302);
+  return NextResponse.redirect(target, 302);
 }

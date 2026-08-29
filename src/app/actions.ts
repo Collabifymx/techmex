@@ -4,6 +4,7 @@ import { fetchEventPreview } from "@/lib/open-graph";
 import { parseSocialsFromJson } from "@/lib/socials";
 import { getSupabase } from "@/lib/supabase";
 import { COMPANY_CATEGORIES } from "@/lib/types";
+import { normalizeWebsiteUrl } from "@/lib/website-url";
 
 function validCategory(category: string) {
   return COMPANY_CATEGORIES.includes(
@@ -66,6 +67,14 @@ export async function submitProject(formData: FormData) {
     return { ok: false, error: "Faltan datos esenciales." };
   }
 
+  const website = normalizeWebsiteUrl(url);
+  if (!website) {
+    return {
+      ok: false,
+      error: "Ese sitio no se entiende. Prueba www.tudominio.com.mx o el link completo.",
+    };
+  }
+
   let iconUrl: string | null = null;
   let founderPhotoUrl: string | null = null;
   try {
@@ -86,7 +95,7 @@ export async function submitProject(formData: FormData) {
   const { error } = await getSupabase().from("submissions").insert({
     kind: "project",
     name,
-    url,
+    url: website,
     email,
     description: description || null,
     category: validCategory(category),
@@ -129,10 +138,18 @@ export async function submitEvent(formData: FormData) {
     };
   }
 
+  const website = url ? normalizeWebsiteUrl(url) : null;
+  if (url && !website) {
+    return {
+      ok: false,
+      error: "Ese sitio no se entiende. Prueba www.tudominio.com.mx o el link completo.",
+    };
+  }
+
   const { error } = await getSupabase().from("submissions").insert({
     kind: "event",
     name: name || "Evento",
-    url: url || "https://somostechmex.com/eventos",
+    url: website || "https://somostechmex.com/eventos",
     email,
     description: description || null,
     city: city || null,

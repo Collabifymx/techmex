@@ -201,7 +201,19 @@ function ProjectForm({ onDone }: { onDone: () => void }) {
             <input required name="name" placeholder="Ej. Mi SaaS" className={inputClass} />
           </Field>
           <Field label="URL del proyecto *">
-            <input required type="url" name="url" placeholder="https://ejemplo.com" className={inputClass} />
+            <input
+              required
+              type="text"
+              inputMode="url"
+              autoComplete="url"
+              spellCheck={false}
+              name="url"
+              placeholder="www.tu-sitio.com.mx"
+              className={inputClass}
+            />
+            <span className="mt-1.5 block text-xs text-mute">
+              Sirve www, .com.mx, .app o el link completo.
+            </span>
           </Field>
           <Field label="Correo de contacto *" className="sm:col-span-2">
             <input required type="email" name="email" placeholder="tu@empresa.com" className={inputClass} />
@@ -486,11 +498,14 @@ function EventForm({ onDone }: { onDone: () => void }) {
           <Field label="Pega el link del evento (Luma, Meetup, etc.)">
             <div className="flex flex-col gap-2 sm:flex-row">
               <input
-                type="url"
+                type="text"
+                inputMode="url"
+                autoComplete="url"
+                spellCheck={false}
                 name="url"
                 value={link}
                 onChange={(event) => setLink(event.target.value)}
-                placeholder="https://lu.ma/tu-evento"
+                placeholder="www.lu.ma/tu-evento"
                 className={inputClass}
               />
               <button

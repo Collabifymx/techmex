@@ -1,3 +1,5 @@
+import { normalizeWebsiteUrl } from "@/lib/website-url";
+
 export type EventPreview = {
   name: string;
   description: string;
@@ -38,12 +40,12 @@ function isPrivateIPv4(hostname: string) {
 }
 
 function assertSafeUrl(raw: string) {
-  let parsed: URL;
-  try {
-    parsed = new URL(raw);
-  } catch {
+  const normalized = normalizeWebsiteUrl(raw);
+  if (!normalized) {
     throw new Error("El link no es válido.");
   }
+
+  const parsed = new URL(normalized);
 
   if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
     throw new Error("Solo se aceptan links http o https.");
