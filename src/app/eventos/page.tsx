@@ -21,7 +21,7 @@ export default async function EventosPage() {
   return (
     <div className="pb-20">
       <PageHero
-        index="02"
+        index="03"
         title="EVENTOS TECH"
         subtitle="Conferencias, hackathons y meetups en México."
       >

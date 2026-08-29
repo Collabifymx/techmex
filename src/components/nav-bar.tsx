@@ -6,9 +6,9 @@ import { NAV_ITEMS } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 
 const ACTIVE_CLASS: Record<string, string> = {
-  "/": "border-t-mint text-mint",
+  "/": "border-t-[#f5c542] text-[#f5c542]",
+  "/directorio": "border-t-mint text-mint",
   "/eventos": "border-t-white text-white",
-  "/buscar": "border-t-signal text-signal",
   "/publicar": "tab-primary font-semibold",
 };
 
@@ -29,8 +29,11 @@ export function NavBar({
       {NAV_ITEMS.map((item) => {
         const active =
           item.href === "/"
-            ? pathname === "/" || pathname.startsWith("/directorio")
-            : pathname.startsWith(item.href);
+            ? pathname === "/"
+            : item.href === "/directorio"
+              ? pathname.startsWith("/directorio") ||
+                pathname.startsWith("/buscar")
+              : pathname.startsWith(item.href);
 
         return (
           <Link

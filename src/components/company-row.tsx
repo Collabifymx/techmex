@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { CompanyCtas } from "@/components/company-ctas";
 import {
   EyeIcon,
@@ -16,9 +16,13 @@ import { formatNumber, formatPlace } from "@/lib/utils";
 export function CompanyRow({
   company,
   showProjectCta = true,
+  banner,
+  note,
 }: {
   company: Company;
   showProjectCta?: boolean;
+  banner?: ReactNode;
+  note?: ReactNode;
 }) {
   const [clicks, setClicks] = useState(company.clicks);
   const hasFounder = Boolean(company.founderName);
@@ -26,6 +30,7 @@ export function CompanyRow({
 
   return (
     <article className="surface overflow-hidden">
+      {banner}
       <div className="px-4 py-5 sm:px-5">
         <div className="flex items-start gap-3 sm:gap-4">
           {company.iconUrl ? (
@@ -55,6 +60,7 @@ export function CompanyRow({
                     company.name
                   )}
                 </h3>
+                {note}
                 <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-mute">
                   <span className="inline-flex items-center gap-1.5">
                     <UsersIcon />

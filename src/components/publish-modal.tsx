@@ -59,7 +59,7 @@ export function PublishModal() {
             </p>
             <button
               type="button"
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/directorio")}
               className="mono mt-6 inline-flex rounded-full border border-mint/70 px-5 py-2 text-[11px] tracking-[0.18em] text-mint"
             >
               VOLVER AL DIRECTORIO

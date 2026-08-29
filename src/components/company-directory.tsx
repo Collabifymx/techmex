@@ -15,7 +15,6 @@ const SORTS: { key: SortKey; label: string }[] = [
   { key: "visits", label: "VISITADOS" },
   { key: "likes", label: "LIKES" },
   { key: "az", label: "A-Z" },
-  { key: "ranking", label: "RANKING" },
 ];
 
 export function CompanyDirectory({

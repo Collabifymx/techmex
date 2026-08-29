@@ -1,0 +1,14 @@
+---
+description: Never commit with the Maslow work email
+alwaysApply: true
+---
+
+# Git author
+
+Never create or amend a commit using `ulises.magdaleno@maslow.hr`.
+
+Always author TechMex commits as `admin@collabify.mx` (name: Ulises Magdaleno) via a one-off override:
+
+`git -c user.email="admin@collabify.mx" -c user.name="Ulises Magdaleno"`
+
+Do not run `git config --global` unless the user explicitly asks.

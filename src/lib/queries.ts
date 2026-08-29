@@ -1,5 +1,6 @@
 import { companies } from "@/lib/companies";
 import { events } from "@/lib/events";
+import type { RankingSlot } from "@/lib/ranking";
 import { parseSocials } from "@/lib/socials";
 import { getSupabase } from "@/lib/supabase";
 import type { Company, ProjectComment, TechEvent } from "@/lib/types";
@@ -102,6 +103,39 @@ export async function fetchCompanies() {
 
   if (error) throw error;
   return ((data ?? []) as CompanyRow[]).map(mapCompany);
+}
+
+export async function fetchRankingSlots(): Promise<RankingSlot[]> {
+  if (!hasSupabaseEnv()) {
+    return [1, 2, 3].map((place) => ({
+      place: place as 1 | 2 | 3,
+      companySlug: null,
+      currentPriceCents: 10000,
+      lastPaidCents: null,
+      purchasedAt: null,
+    }));
+  }
+
+  const { data, error } = await getSupabase()
+    .from("ranking_slots")
+    .select("place, company_slug, current_price_cents, last_paid_cents, purchased_at")
+    .order("place");
+
+  if (error) throw error;
+
+  return ((data ?? []) as Array<{
+    place: number;
+    company_slug: string | null;
+    current_price_cents: number;
+    last_paid_cents: number | null;
+    purchased_at: string | null;
+  }>).map((row) => ({
+    place: row.place as 1 | 2 | 3,
+    companySlug: row.company_slug,
+    currentPriceCents: row.current_price_cents,
+    lastPaidCents: row.last_paid_cents,
+    purchasedAt: row.purchased_at,
+  }));
 }
 
 export async function fetchCompany(slug: string) {

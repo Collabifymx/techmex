@@ -40,10 +40,10 @@ export default async function ProyectoPage({
   return (
     <div className="mx-auto max-w-6xl px-4 pt-10 pb-20 sm:px-6">
       <Link
-        href="/"
+        href="/directorio"
         className="mono text-[11px] tracking-[0.16em] text-mute hover:text-mint"
       >
-        ← 01 / DIRECTORIO
+        ← 02 / DIRECTORIO
       </Link>
       <div className="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
         <ProjectProfile company={company} comments={comments} />

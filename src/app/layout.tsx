@@ -16,11 +16,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "TechMex · Comunidad tech de México",
+    default: "TechMex · De México para el mundo",
     template: "%s · TechMex",
   },
   description:
-    "Directorio de empresas, eventos y proyectos de la comunidad tech de México.",
+    "Ranking y directorio de startups, eventos y proyectos de la comunidad tech de México.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

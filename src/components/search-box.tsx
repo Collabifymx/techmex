@@ -7,7 +7,7 @@ import { SearchIcon } from "@/components/icons";
 export function SearchBox({
   defaultValue = "",
   placeholder = "search",
-  action = "/buscar",
+  action = "/directorio",
   onSubmitQuery,
   autoFocus = false,
 }: {
