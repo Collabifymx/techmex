@@ -35,8 +35,15 @@ export function formatMxn(pesos: number) {
   }).format(pesos);
 }
 
+export function nextAskCents(slot?: RankingSlot | null) {
+  if (slot?.lastPaidCents) {
+    return slot.lastPaidCents + RANKING_STEP_MXN * 100;
+  }
+  return slot?.currentPriceCents ?? RANKING_START_MXN * 100;
+}
+
 export function bidRange(slot?: RankingSlot | null) {
-  const minCents = slot?.currentPriceCents ?? RANKING_START_MXN * 100;
+  const minCents = nextAskCents(slot);
   return {
     minCents,
     maxCents: minCents * RANKING_MAX_MULTIPLIER,
