@@ -70,7 +70,7 @@ export function CompanyRow({
                 {company.category}
               </span>
             </div>
-            <p className="mt-3 text-sm leading-6 break-words text-mute">
+            <p className="mt-3 text-sm font-normal leading-6 break-words text-white">
               {company.description}
             </p>
             {company.tags.length ? (
