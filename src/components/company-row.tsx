@@ -1,13 +1,19 @@
+"use client";
+
+import { useState } from "react";
 import { EyeIcon, UsersIcon } from "@/components/icons";
 import type { Company } from "@/lib/types";
 import { formatNumber } from "@/lib/utils";
 
 export function CompanyRow({ company }: { company: Company }) {
+  const [clicks, setClicks] = useState(company.clicks);
+
   return (
     <a
-      href={company.url}
+      href={`/go/${company.slug}`}
       target="_blank"
       rel="noreferrer"
+      onClick={() => setClicks((value) => value + 1)}
       className="surface block px-4 py-5 sm:px-5"
     >
       <div className="flex items-start gap-3 sm:gap-4">
@@ -35,7 +41,7 @@ export function CompanyRow({ company }: { company: Company }) {
               <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-mute">
                 <span className="inline-flex items-center gap-1.5">
                   <UsersIcon />
-                  {formatNumber(company.clicks)} clicks
+                  {formatNumber(clicks)} clicks
                 </span>
                 {company.city ? <span>{company.city}</span> : null}
               </p>
