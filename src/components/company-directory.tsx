@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { CompanyRow } from "@/components/company-row";
+import { DirectoryEmptyState } from "@/components/directory-empty-state";
 import { SearchBox } from "@/components/search-box";
 import { PRIMARY_CATEGORIES, categoryCounts, sortCompanies } from "@/lib/companies";
 import type { Company, CompanyCategory, SortKey } from "@/lib/types";
@@ -49,6 +50,14 @@ export function CompanyDirectory({
     });
     return sortCompanies(filtered, sort);
   }, [category, companies, query, sort]);
+
+  if (!companies.length) {
+    return (
+      <div className="mx-auto max-w-5xl px-4 pb-20 sm:px-6">
+        <DirectoryEmptyState />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-5xl px-4 pb-20 sm:px-6">

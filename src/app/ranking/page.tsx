@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CompanyRow } from "@/components/company-row";
+import { DirectoryEmptyState } from "@/components/directory-empty-state";
 import { PageHero } from "@/components/page-hero";
 import { fetchCompanies } from "@/lib/queries";
 
@@ -23,6 +24,7 @@ export default async function RankingPage() {
         subtitle="Los proyectos tech más visibles de México. Esta página está lista, pero no aparece en el menú."
       />
       <div className="mx-auto max-w-5xl space-y-3 px-4 sm:px-6">
+        {!ranked.length ? <DirectoryEmptyState /> : null}
         {ranked.map((company, index) => (
           <div key={company.slug} className="relative">
             <span className="mono absolute -left-10 top-7 hidden text-sm text-mint lg:block">

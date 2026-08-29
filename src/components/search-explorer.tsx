@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { CompanyRow } from "@/components/company-row";
+import { DirectoryEmptyState } from "@/components/directory-empty-state";
 import { EventCard } from "@/components/event-card";
 import { SearchBox } from "@/components/search-box";
 import type { Company, TechEvent } from "@/lib/types";
@@ -98,6 +99,8 @@ export function SearchExplorer({
               companyResults.map((company) => (
                 <CompanyRow key={company.slug} company={company} />
               ))
+            ) : companies.length === 0 ? (
+              <DirectoryEmptyState />
             ) : (
               <p className="surface px-5 py-10 text-center text-sm text-mute">
                 No hay empresas para esa búsqueda.
