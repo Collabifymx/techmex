@@ -44,6 +44,7 @@ export function CompanyDirectory({
         company.description,
         company.tags,
         company.city,
+        company.state,
         company.category,
       ]);
       return matchesCategory && matchesSearch;

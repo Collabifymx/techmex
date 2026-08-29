@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { EyeIcon, UsersIcon } from "@/components/icons";
 import type { Company } from "@/lib/types";
-import { formatNumber } from "@/lib/utils";
+import { formatNumber, formatPlace } from "@/lib/utils";
 
 export function CompanyRow({ company }: { company: Company }) {
   const [clicks, setClicks] = useState(company.clicks);
@@ -43,7 +43,9 @@ export function CompanyRow({ company }: { company: Company }) {
                   <UsersIcon />
                   {formatNumber(clicks)} clicks
                 </span>
-                {company.city ? <span>{company.city}</span> : null}
+                {formatPlace(company.city, company.state) ? (
+                  <span>{formatPlace(company.city, company.state)}</span>
+                ) : null}
               </p>
             </div>
             <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-black/35 px-2.5 py-1 text-[12px] text-mute">

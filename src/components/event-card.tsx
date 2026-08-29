@@ -1,9 +1,11 @@
 import { EyeIcon, PinIcon } from "@/components/icons";
 import type { TechEvent } from "@/lib/types";
-import { formatDateRange, monthShort } from "@/lib/utils";
+import { formatDateRange, formatPlace, monthShort } from "@/lib/utils";
 
 export function EventCard({ event }: { event: TechEvent }) {
-  const place = [event.venue, event.city].filter(Boolean).join(", ");
+  const place = [event.venue, formatPlace(event.city, event.state)]
+    .filter(Boolean)
+    .join(", ");
 
   return (
     <article className="surface px-4 py-5 sm:px-5">

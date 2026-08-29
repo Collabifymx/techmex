@@ -54,9 +54,11 @@ export async function submitProject(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
   const category = String(formData.get("category") ?? "").trim();
+  const city = String(formData.get("city") ?? "").trim();
+  const state = String(formData.get("state") ?? "").trim();
   const icon = formData.get("icon");
 
-  if (!name || !url || !email) {
+  if (!name || !url || !email || !city || !state) {
     return { ok: false, error: "Faltan datos esenciales." };
   }
 
@@ -80,6 +82,8 @@ export async function submitProject(formData: FormData) {
     email,
     description: description || null,
     category: validCategory(category),
+    city,
+    state,
     icon_url: iconUrl,
   });
 
@@ -96,6 +100,7 @@ export async function submitEvent(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
   const city = String(formData.get("city") ?? "").trim();
+  const state = String(formData.get("state") ?? "").trim();
   const venue = String(formData.get("venue") ?? "").trim();
   const address = String(formData.get("address") ?? "").trim();
   const startsAt = String(formData.get("startsAt") ?? "").trim();
@@ -120,6 +125,7 @@ export async function submitEvent(formData: FormData) {
     email,
     description: description || null,
     city: city || null,
+    state: state || null,
     venue: venue || null,
     address: address || null,
     starts_at: startsAt || null,

@@ -25,6 +25,43 @@ export const COMPANY_CATEGORIES = [
 
 export type CompanyCategory = (typeof COMPANY_CATEGORIES)[number];
 
+export const MEXICAN_STATES = [
+  "Aguascalientes",
+  "Baja California",
+  "Baja California Sur",
+  "Campeche",
+  "Chiapas",
+  "Chihuahua",
+  "Ciudad de México",
+  "Coahuila",
+  "Colima",
+  "Durango",
+  "Estado de México",
+  "Guanajuato",
+  "Guerrero",
+  "Hidalgo",
+  "Jalisco",
+  "Michoacán",
+  "Morelos",
+  "Nayarit",
+  "Nuevo León",
+  "Oaxaca",
+  "Puebla",
+  "Querétaro",
+  "Quintana Roo",
+  "San Luis Potosí",
+  "Sinaloa",
+  "Sonora",
+  "Tabasco",
+  "Tamaulipas",
+  "Tlaxcala",
+  "Veracruz",
+  "Yucatán",
+  "Zacatecas",
+] as const;
+
+export type MexicanState = (typeof MEXICAN_STATES)[number];
+
 export type Company = {
   slug: string;
   name: string;
@@ -33,6 +70,7 @@ export type Company = {
   category: CompanyCategory;
   tags: string[];
   city: string;
+  state?: string | null;
   clicks: number;
   likes: number;
   createdAt: string;
@@ -52,6 +90,7 @@ export type TechEvent = {
   url: string;
   tags: string[];
   city: string;
+  state?: string | null;
   venue?: string;
   startsAt: string;
   endsAt?: string;

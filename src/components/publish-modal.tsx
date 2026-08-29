@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { previewEventFromUrl, submitEvent, submitProject } from "@/app/actions";
 import { EventCard } from "@/components/event-card";
-import { COMPANY_CATEGORIES } from "@/lib/types";
+import { COMPANY_CATEGORIES, MEXICAN_STATES } from "@/lib/types";
 import type { TechEvent } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -140,6 +140,21 @@ function ProjectForm({ onDone }: { onDone: () => void }) {
           <Field label="Correo de contacto *" className="sm:col-span-2">
             <input required type="email" name="email" placeholder="tu@empresa.com" className={inputClass} />
           </Field>
+          <Field label="Ciudad *">
+            <input required name="city" placeholder="Guadalajara" className={inputClass} />
+          </Field>
+          <Field label="Estado *">
+            <select required name="state" defaultValue="" className={inputClass}>
+              <option value="" disabled>
+                Elegir estado
+              </option>
+              {MEXICAN_STATES.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </Field>
           <div className="sm:col-span-2">
             <p className="mb-1.5 text-sm text-white">Icono</p>
             <label className="flex cursor-pointer items-center gap-4 rounded-[16px] border border-dashed border-white/10 bg-black/20 px-4 py-4">
@@ -216,6 +231,7 @@ function EventForm({ onDone }: { onDone: () => void }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [city, setCity] = useState("");
+  const [state, setState] = useState("");
   const [venue, setVenue] = useState("");
   const [address, setAddress] = useState("");
   const [startsAt, setStartsAt] = useState("");
@@ -233,6 +249,7 @@ function EventForm({ onDone }: { onDone: () => void }) {
       url: link || "https://somostechmex.com/eventos",
       tags: [],
       city,
+      state,
       venue: venue || undefined,
       startsAt,
       time: time ? `${time} hs` : "Por confirmar",
@@ -240,7 +257,7 @@ function EventForm({ onDone }: { onDone: () => void }) {
       organizer: organizer || "Organizador",
       format: "Presencial",
     }),
-    [city, description, link, name, organizer, price, startsAt, time, venue],
+    [city, description, link, name, organizer, price, startsAt, state, time, venue],
   );
 
   async function importFromLink() {
@@ -271,6 +288,7 @@ function EventForm({ onDone }: { onDone: () => void }) {
     formData.set("url", link);
     formData.set("description", description);
     formData.set("city", city);
+    formData.set("state", state);
     formData.set("venue", venue);
     formData.set("address", address);
     formData.set("startsAt", startsAt);
@@ -347,14 +365,33 @@ function EventForm({ onDone }: { onDone: () => void }) {
               className={inputClass}
             />
           </Field>
-          <Field label="Ciudad">
+          <Field label="Ciudad *">
             <input
+              required
               name="city"
               value={city}
               onChange={(event) => setCity(event.target.value)}
               placeholder="Ciudad de México"
               className={inputClass}
             />
+          </Field>
+          <Field label="Estado *">
+            <select
+              required
+              name="state"
+              value={state}
+              onChange={(event) => setState(event.target.value)}
+              className={inputClass}
+            >
+              <option value="" disabled>
+                Elegir estado
+              </option>
+              {MEXICAN_STATES.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
           </Field>
           <Field label="Lugar">
             <input

@@ -18,6 +18,7 @@ type CompanyRow = {
   category: Company["category"];
   tags: string[];
   city: string;
+  state: string | null;
   clicks: number;
   likes: number;
   created_at: string;
@@ -34,6 +35,7 @@ type EventRow = {
   url: string;
   tags: string[];
   city: string;
+  state: string | null;
   venue: string | null;
   starts_at: string;
   ends_at: string | null;
@@ -52,6 +54,7 @@ function mapCompany(row: CompanyRow): Company {
     category: row.category,
     tags: row.tags,
     city: row.city,
+    state: row.state,
     clicks: row.clicks,
     likes: row.likes,
     createdAt: row.created_at,
@@ -70,6 +73,7 @@ function mapEvent(row: EventRow): TechEvent {
     url: row.url,
     tags: row.tags,
     city: row.city,
+    state: row.state,
     venue: row.venue ?? undefined,
     startsAt: row.starts_at,
     endsAt: row.ends_at ?? undefined,
