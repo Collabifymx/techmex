@@ -9,9 +9,9 @@ import type { Company, CompanyCategory, SortKey } from "@/lib/types";
 import { cn, formatNumber, matchesQuery } from "@/lib/utils";
 
 const SORTS: { key: SortKey; label: string }[] = [
-  { key: "random", label: "AL AZAR" },
   { key: "recent", label: "RECIENTES" },
-  { key: "oldest", label: "ANTERIORES" },
+  { key: "oldest", label: "ANTIGÜEDAD" },
+  { key: "random", label: "AL AZAR" },
   { key: "visits", label: "VISITADOS" },
   { key: "likes", label: "LIKES" },
   { key: "az", label: "A-Z" },
@@ -27,7 +27,7 @@ export function CompanyDirectory({
 }) {
   const [query, setQuery] = useState(initialQuery);
   const [category, setCategory] = useState<CompanyCategory | "Todos">("Todos");
-  const [sort, setSort] = useState<SortKey>("random");
+  const [sort, setSort] = useState<SortKey>("recent");
   const [moreOpen, setMoreOpen] = useState(false);
   const { total, counts } = categoryCounts(companies);
 

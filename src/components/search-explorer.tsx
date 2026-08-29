@@ -5,6 +5,7 @@ import { CompanyRow } from "@/components/company-row";
 import { DirectoryEmptyState } from "@/components/directory-empty-state";
 import { EventCard } from "@/components/event-card";
 import { SearchBox } from "@/components/search-box";
+import { sortCompanies } from "@/lib/companies";
 import type { Company, TechEvent } from "@/lib/types";
 import { cn, matchesQuery } from "@/lib/utils";
 
@@ -24,15 +25,18 @@ export function SearchExplorer({
 
   const companyResults = useMemo(
     () =>
-      companies.filter((company) =>
-        matchesQuery(query, [
-          company.name,
-          company.description,
-          company.tags,
-          company.city,
-          company.state,
-          company.category,
-        ]),
+      sortCompanies(
+        companies.filter((company) =>
+          matchesQuery(query, [
+            company.name,
+            company.description,
+            company.tags,
+            company.city,
+            company.state,
+            company.category,
+          ]),
+        ),
+        "recent",
       ),
     [companies, query],
   );

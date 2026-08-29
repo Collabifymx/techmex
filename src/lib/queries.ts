@@ -91,7 +91,7 @@ export async function fetchCompanies() {
     .from("companies")
     .select("*")
     .eq("status", "approved")
-    .order("name");
+    .order("created_at", { ascending: false });
 
   if (error) throw error;
   return ((data ?? []) as CompanyRow[]).map(mapCompany);
