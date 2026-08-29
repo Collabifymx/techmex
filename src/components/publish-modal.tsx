@@ -100,6 +100,19 @@ function ProjectForm({ onDone }: { onDone: () => void }) {
   const [category, setCategory] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [iconName, setIconName] = useState<string | null>(null);
+  const [iconPreview, setIconPreview] = useState<string | null>(null);
+
+  function handleIconChange(file: File | undefined) {
+    if (iconPreview) URL.revokeObjectURL(iconPreview);
+    if (!file) {
+      setIconName(null);
+      setIconPreview(null);
+      return;
+    }
+    setIconName(file.name);
+    setIconPreview(URL.createObjectURL(file));
+  }
 
   async function handleSubmit(formData: FormData) {
     formData.set("category", category);
@@ -127,6 +140,38 @@ function ProjectForm({ onDone }: { onDone: () => void }) {
           <Field label="Correo de contacto *" className="sm:col-span-2">
             <input required type="email" name="email" placeholder="tu@empresa.com" className={inputClass} />
           </Field>
+          <div className="sm:col-span-2">
+            <p className="mb-1.5 text-sm text-white">Icono</p>
+            <label className="flex cursor-pointer items-center gap-4 rounded-[16px] border border-dashed border-white/10 bg-black/20 px-4 py-4">
+              {iconPreview ? (
+                <img
+                  src={iconPreview}
+                  alt=""
+                  className="h-12 w-12 rounded-full object-cover"
+                />
+              ) : (
+                <span className="mono flex h-12 w-12 items-center justify-center rounded-full bg-black/40 text-[10px] tracking-[0.14em] text-mute">
+                  ICON
+                </span>
+              )}
+              <span>
+                <span className="block text-sm text-white">
+                  {iconName ?? "Elegir icono (opcional)"}
+                </span>
+                <span className="block text-xs text-mute">
+                  PNG, JPG o WebP. Máx. 1 MB. Si no subes uno, usamos el
+                  favicon del sitio
+                </span>
+              </span>
+              <input
+                type="file"
+                name="icon"
+                accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
+                className="sr-only"
+                onChange={(event) => handleIconChange(event.target.files?.[0])}
+              />
+            </label>
+          </div>
           <Field label="Descripción" className="sm:col-span-2">
             <textarea
               name="description"

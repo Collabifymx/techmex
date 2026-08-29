@@ -23,6 +23,7 @@ type CompanyRow = {
   created_at: string;
   initials: string;
   icon_bg: string;
+  icon_url: string | null;
   rank_score: number;
 };
 
@@ -56,6 +57,7 @@ function mapCompany(row: CompanyRow): Company {
     createdAt: row.created_at,
     initials: row.initials,
     iconBg: row.icon_bg,
+    iconUrl: row.icon_url,
     rankScore: row.rank_score,
   };
 }

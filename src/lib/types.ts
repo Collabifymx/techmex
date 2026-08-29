@@ -38,6 +38,7 @@ export type Company = {
   createdAt: string;
   initials: string;
   iconBg: string;
+  iconUrl?: string | null;
   rankScore: number;
 };
 

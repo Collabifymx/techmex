@@ -11,12 +11,20 @@ export function CompanyRow({ company }: { company: Company }) {
       className="surface block px-5 py-5 transition-transform duration-200 hover:-translate-y-0.5"
     >
       <div className="flex items-start gap-4">
-        <span
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white"
-          style={{ backgroundColor: company.iconBg }}
-        >
-          {company.initials}
-        </span>
+        {company.iconUrl ? (
+          <img
+            src={company.iconUrl}
+            alt=""
+            className="h-11 w-11 shrink-0 rounded-full object-cover"
+          />
+        ) : (
+          <span
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white"
+            style={{ backgroundColor: company.iconBg }}
+          >
+            {company.initials}
+          </span>
+        )}
 
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
