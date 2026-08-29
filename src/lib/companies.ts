@@ -43,9 +43,9 @@ export function sortCompanies(list: Company[], sort: SortKey) {
 }
 
 export const PRIMARY_CATEGORIES: CompanyCategory[] = [
-  "Servicios",
   "Fintech",
-  "Comercio",
+  "Edtech",
+  "Martech",
+  "SaaS",
   "IA",
-  "Otros",
 ];

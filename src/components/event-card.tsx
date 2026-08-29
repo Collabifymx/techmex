@@ -8,7 +8,7 @@ export function EventCard({ event }: { event: TechEvent }) {
       <div className="flex items-start gap-4">
         <span className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-full bg-black/40 text-center">
           <span className="mono text-[9px] tracking-widest text-mint">
-            {monthShort(event.startsAt)}
+            {event.startsAt ? monthShort(event.startsAt) : "—"}
           </span>
         </span>
 
@@ -17,7 +17,12 @@ export function EventCard({ event }: { event: TechEvent }) {
             <div>
               <h3 className="text-[17px] font-semibold text-white">{event.name}</h3>
               <p className="mt-1 text-[13px] text-mute">
-                {formatDateRange(event.startsAt, event.endsAt)} · {event.city}
+                {event.startsAt
+                  ? formatDateRange(event.startsAt, event.endsAt)
+                  : "Fecha por confirmar"}
+                {event.venue || event.city
+                  ? ` · ${[event.venue, event.city].filter(Boolean).join(", ")}`
+                  : ""}
               </p>
             </div>
             <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-black/35 px-2.5 py-1 text-[12px] text-mute">

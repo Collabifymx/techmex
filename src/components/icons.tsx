@@ -98,9 +98,9 @@ export function CategoryMark({
         <path d="M12 20h16M20 12v16" className={common} strokeWidth="1.4" />
       ) : category === "IA" ? (
         <path d="M12 26 20 10l8 16M15 21h10" className={common} strokeWidth="1.4" />
-      ) : category === "Comercio" ? (
+      ) : category === "Comercio" || category === "Ecommerce" ? (
         <path d="M10 14h20l-2 12H12L10 14Zm4 0V12a6 6 0 0 1 12 0v2" className={common} strokeWidth="1.4" />
-      ) : category === "Salud" ? (
+      ) : category === "Salud" || category === "Healthtech" ? (
         <path d="M20 12v16M12 20h16" className={common} strokeWidth="1.6" />
       ) : category === "Logística" ? (
         <path d="M8 26h24M10 26V16h12l6 6v4" className={common} strokeWidth="1.4" />
