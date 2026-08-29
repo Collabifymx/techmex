@@ -81,7 +81,7 @@ export function normalize(value: string) {
 
 export function matchesQuery(
   query: string,
-  fields: Array<string | string[] | undefined>,
+  fields: Array<string | string[] | null | undefined>,
 ) {
   const q = normalize(query.trim());
   if (!q) return true;
