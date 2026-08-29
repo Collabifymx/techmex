@@ -34,6 +34,7 @@ export function SearchExplorer({
             company.city,
             company.state,
             company.category,
+            company.founderName,
           ]),
         ),
         "recent",

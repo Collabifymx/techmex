@@ -62,6 +62,21 @@ export const MEXICAN_STATES = [
 
 export type MexicanState = (typeof MEXICAN_STATES)[number];
 
+export const SOCIAL_NETWORKS = [
+  { id: "instagram", label: "Instagram" },
+  { id: "x", label: "X" },
+  { id: "tiktok", label: "TikTok" },
+] as const;
+
+export type SocialNetwork = (typeof SOCIAL_NETWORKS)[number]["id"];
+export type SocialKind = "personal" | "business";
+
+export type SocialLink = {
+  network: SocialNetwork;
+  kind: SocialKind;
+  handle: string;
+};
+
 export type Company = {
   slug: string;
   name: string;
@@ -77,6 +92,9 @@ export type Company = {
   initials: string;
   iconBg: string;
   iconUrl?: string | null;
+  founderName?: string | null;
+  founderPhotoUrl?: string | null;
+  socials: SocialLink[];
   rankScore: number;
 };
 

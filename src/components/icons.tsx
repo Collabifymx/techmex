@@ -75,6 +75,32 @@ export function MenuIcon({ className = "h-5 w-5" }: IconProps) {
   );
 }
 
+export function InstagramIcon({ className = "h-3.5 w-3.5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className={className} aria-hidden>
+      <rect x="4" y="4" width="16" height="16" rx="5" />
+      <circle cx="12" cy="12" r="3.4" />
+      <circle cx="17.2" cy="6.8" r="0.8" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function XIcon({ className = "h-3.5 w-3.5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+      <path d="M14.7 10.4 21 3h-1.8l-5.4 6.3L9.4 3H3.2l6.6 9.6L3 21h1.8l6-6.9L14.6 21h6.2l-6.1-10.6ZM5.8 4.3h2.8l9.6 15.4h-2.8L5.8 4.3Z" />
+    </svg>
+  );
+}
+
+export function TikTokIcon({ className = "h-3.5 w-3.5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+      <path d="M14.2 3h2.2c.2 1.8 1.3 3.2 3.4 3.5v2.2c-1.2 0-2.3-.4-3.2-1v6.6c0 3.3-2.6 5.7-6 5.7S4.6 17.6 4.6 14.3c0-3.2 2.5-5.6 5.8-5.7v2.4c-1.8.1-3.2 1.6-3.2 3.3 0 1.8 1.5 3.3 3.3 3.3s3.2-1.4 3.2-3.2V3Z" />
+    </svg>
+  );
+}
+
 export function CloseIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className={className} aria-hidden>

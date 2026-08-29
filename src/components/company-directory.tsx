@@ -46,6 +46,7 @@ export function CompanyDirectory({
         company.city,
         company.state,
         company.category,
+        company.founderName,
       ]);
       return matchesCategory && matchesSearch;
     });

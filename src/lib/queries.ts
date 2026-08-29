@@ -1,5 +1,6 @@
 import { companies } from "@/lib/companies";
 import { events } from "@/lib/events";
+import { parseSocials } from "@/lib/socials";
 import { getSupabase } from "@/lib/supabase";
 import type { Company, TechEvent } from "@/lib/types";
 
@@ -25,6 +26,9 @@ type CompanyRow = {
   initials: string;
   icon_bg: string;
   icon_url: string | null;
+  founder_name: string | null;
+  founder_photo_url: string | null;
+  socials: unknown;
   rank_score: number;
 };
 
@@ -61,6 +65,9 @@ function mapCompany(row: CompanyRow): Company {
     initials: row.initials,
     iconBg: row.icon_bg,
     iconUrl: row.icon_url,
+    founderName: row.founder_name,
+    founderPhotoUrl: row.founder_photo_url,
+    socials: parseSocials(row.socials),
     rankScore: row.rank_score,
   };
 }

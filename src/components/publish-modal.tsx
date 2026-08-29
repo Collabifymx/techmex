@@ -4,8 +4,13 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { previewEventFromUrl, submitEvent, submitProject } from "@/app/actions";
 import { EventCard } from "@/components/event-card";
-import { COMPANY_CATEGORIES, MEXICAN_STATES } from "@/lib/types";
-import type { TechEvent } from "@/lib/types";
+import { normalizeHandle } from "@/lib/socials";
+import {
+  COMPANY_CATEGORIES,
+  MEXICAN_STATES,
+  SOCIAL_NETWORKS,
+} from "@/lib/types";
+import type { SocialKind, SocialLink, SocialNetwork, TechEvent } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 type Tab = "project" | "event";
@@ -96,12 +101,55 @@ export function PublishModal() {
   );
 }
 
+const EMPTY_SOCIALS: Record<SocialNetwork, Record<SocialKind, string>> = {
+  instagram: { personal: "", business: "" },
+  x: { personal: "", business: "" },
+  tiktok: { personal: "", business: "" },
+};
+
+function collectSocials(
+  enabled: Record<SocialNetwork, boolean>,
+  values: Record<SocialNetwork, Record<SocialKind, string>>,
+): { socials: SocialLink[]; error: string | null } {
+  const socials: SocialLink[] = [];
+
+  for (const network of SOCIAL_NETWORKS) {
+    if (!enabled[network.id]) continue;
+    const personal = normalizeHandle(values[network.id].personal);
+    const business = normalizeHandle(values[network.id].business);
+    if (!personal && !business) {
+      return {
+        socials: [],
+        error: `Agrega un handle de ${network.label} (personal o del negocio).`,
+      };
+    }
+    if (values[network.id].personal.trim() && !personal) {
+      return { socials: [], error: `El handle personal de ${network.label} no es válido.` };
+    }
+    if (values[network.id].business.trim() && !business) {
+      return { socials: [], error: `El handle del negocio de ${network.label} no es válido.` };
+    }
+    if (personal) socials.push({ network: network.id, kind: "personal", handle: personal });
+    if (business) socials.push({ network: network.id, kind: "business", handle: business });
+  }
+
+  return { socials, error: null };
+}
+
 function ProjectForm({ onDone }: { onDone: () => void }) {
   const [category, setCategory] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [iconName, setIconName] = useState<string | null>(null);
   const [iconPreview, setIconPreview] = useState<string | null>(null);
+  const [founderPhotoName, setFounderPhotoName] = useState<string | null>(null);
+  const [founderPhotoPreview, setFounderPhotoPreview] = useState<string | null>(null);
+  const [socialEnabled, setSocialEnabled] = useState<Record<SocialNetwork, boolean>>({
+    instagram: false,
+    x: false,
+    tiktok: false,
+  });
+  const [socialValues, setSocialValues] = useState(EMPTY_SOCIALS);
 
   function handleIconChange(file: File | undefined) {
     if (iconPreview) URL.revokeObjectURL(iconPreview);
@@ -114,8 +162,26 @@ function ProjectForm({ onDone }: { onDone: () => void }) {
     setIconPreview(URL.createObjectURL(file));
   }
 
+  function handleFounderPhotoChange(file: File | undefined) {
+    if (founderPhotoPreview) URL.revokeObjectURL(founderPhotoPreview);
+    if (!file) {
+      setFounderPhotoName(null);
+      setFounderPhotoPreview(null);
+      return;
+    }
+    setFounderPhotoName(file.name);
+    setFounderPhotoPreview(URL.createObjectURL(file));
+  }
+
   async function handleSubmit(formData: FormData) {
+    const collected = collectSocials(socialEnabled, socialValues);
+    if (collected.error) {
+      setError(collected.error);
+      return;
+    }
+
     formData.set("category", category);
+    formData.set("socials", JSON.stringify(collected.socials));
     setPending(true);
     setError(null);
     const result = await submitProject(formData);
@@ -155,6 +221,114 @@ function ProjectForm({ onDone }: { onDone: () => void }) {
               ))}
             </select>
           </Field>
+          <Field label="Nombre del founder *" className="sm:col-span-2">
+            <input
+              required
+              name="founderName"
+              placeholder="Ej. Ana Pérez"
+              className={inputClass}
+            />
+          </Field>
+          <div className="sm:col-span-2">
+            <p className="mb-1.5 text-sm text-white">Foto del founder</p>
+            <label className="flex cursor-pointer items-center gap-4 rounded-[16px] border border-dashed border-white/10 bg-black/20 px-4 py-4">
+              {founderPhotoPreview ? (
+                <img
+                  src={founderPhotoPreview}
+                  alt=""
+                  className="h-12 w-12 rounded-full object-cover"
+                />
+              ) : (
+                <span className="mono flex h-12 w-12 items-center justify-center rounded-full bg-black/40 text-[10px] tracking-[0.14em] text-mute">
+                  FOTO
+                </span>
+              )}
+              <span>
+                <span className="block text-sm text-white">
+                  {founderPhotoName ?? "Elegir foto (opcional)"}
+                </span>
+                <span className="block text-xs text-mute">
+                  PNG, JPG o WebP. Máx. 1 MB.
+                </span>
+              </span>
+              <input
+                type="file"
+                name="founderPhoto"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                className="sr-only"
+                onChange={(event) =>
+                  handleFounderPhotoChange(event.target.files?.[0])
+                }
+              />
+            </label>
+          </div>
+          <div className="sm:col-span-2">
+            <p className="mb-2 text-sm text-white">Redes</p>
+            <p className="mb-3 text-xs text-mute">
+              Elige Instagram, X o TikTok y agrega el handle personal o del
+              negocio.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {SOCIAL_NETWORKS.map((network) => (
+                <button
+                  key={network.id}
+                  type="button"
+                  onClick={() =>
+                    setSocialEnabled((current) => ({
+                      ...current,
+                      [network.id]: !current[network.id],
+                    }))
+                  }
+                  className={cn(
+                    "mono rounded-full border px-3 py-1 text-[10px] tracking-[0.14em]",
+                    socialEnabled[network.id]
+                      ? "border-mint/60 text-mint"
+                      : "border-white/15 text-mute hover:text-white",
+                  )}
+                >
+                  {network.label.toUpperCase()}
+                </button>
+              ))}
+            </div>
+            {SOCIAL_NETWORKS.filter((network) => socialEnabled[network.id]).map(
+              (network) => (
+                <div key={network.id} className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <Field label={`${network.label} personal`}>
+                    <input
+                      value={socialValues[network.id].personal}
+                      onChange={(event) =>
+                        setSocialValues((current) => ({
+                          ...current,
+                          [network.id]: {
+                            ...current[network.id],
+                            personal: event.target.value,
+                          },
+                        }))
+                      }
+                      placeholder="@handle"
+                      className={inputClass}
+                    />
+                  </Field>
+                  <Field label={`${network.label} del negocio`}>
+                    <input
+                      value={socialValues[network.id].business}
+                      onChange={(event) =>
+                        setSocialValues((current) => ({
+                          ...current,
+                          [network.id]: {
+                            ...current[network.id],
+                            business: event.target.value,
+                          },
+                        }))
+                      }
+                      placeholder="@handle"
+                      className={inputClass}
+                    />
+                  </Field>
+                </div>
+              ),
+            )}
+          </div>
           <div className="sm:col-span-2">
             <p className="mb-1.5 text-sm text-white">Icono</p>
             <label className="flex cursor-pointer items-center gap-4 rounded-[16px] border border-dashed border-white/10 bg-black/20 px-4 py-4">
