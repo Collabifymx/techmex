@@ -75,7 +75,7 @@ export function StartupRanking({
         <p className="mb-4 text-sm text-[#f5c542]">{notice}</p>
       ) : null}
 
-      <section className="surface px-5 py-8 sm:px-10">
+      <section className="surface px-4 py-4 sm:px-6">
         <RankingClaimForm
           place={1}
           slot={first?.slot ?? null}
@@ -84,7 +84,7 @@ export function StartupRanking({
         />
       </section>
 
-      <div className="mt-8 space-y-3">
+      <div className="mt-4 space-y-3">
         {entries.map((entry) => {
           const medal = MEDAL[entry.place as keyof typeof MEDAL];
           const range = medal ? bidRange(entry.slot) : null;

@@ -35,7 +35,7 @@ export function RankingBidModal({
             CERRAR
           </button>
         </div>
-        <div className="px-5 py-6 sm:px-8">
+        <div className="px-4 py-4 sm:px-6">
           <RankingClaimForm
             place={place}
             slot={slot}

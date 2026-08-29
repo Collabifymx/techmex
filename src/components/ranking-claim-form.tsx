@@ -72,114 +72,118 @@ export function RankingClaimForm({
   }
 
   return (
-    <div className="space-y-5">
-      <div className="text-center">
-        <p className="mono text-[11px] tracking-[0.18em] text-mute">
-          LUGAR {String(place).padStart(2, "0")} · {medal}
-        </p>
-        <h2 className="display mt-2 text-4xl text-[#f5c542] sm:text-5xl">
-          RECLAMA EL {String(place).padStart(2, "0")}
-        </h2>
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="mono text-[10px] tracking-[0.18em] text-mute">
+            LUGAR {String(place).padStart(2, "0")} · {medal}
+          </p>
+          <h2 className="display mt-1 text-2xl text-[#f5c542] sm:text-3xl">
+            RECLAMA EL {String(place).padStart(2, "0")}
+          </h2>
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => step(-RANKING_STEP_MXN)}
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-white/12 text-lg text-mute hover:border-[#f5c542]/50 hover:text-white"
+            aria-label="Bajar oferta"
+          >
+            −
+          </button>
+          <p className="display min-w-[6.5rem] text-center text-3xl text-white">
+            {formatMxn(pesos)}
+          </p>
+          <button
+            type="button"
+            onClick={() => step(RANKING_STEP_MXN)}
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-white/12 text-lg text-mute hover:border-[#f5c542]/50 hover:text-white"
+            aria-label="Subir oferta"
+          >
+            +
+          </button>
+        </div>
       </div>
 
-      <div className="flex items-center justify-center gap-5">
-        <button
-          type="button"
-          onClick={() => step(-RANKING_STEP_MXN)}
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-white/12 text-xl text-mute hover:border-[#f5c542]/50 hover:text-white"
-          aria-label="Bajar oferta"
-        >
-          −
-        </button>
-        <p className="display min-w-[10rem] text-center text-5xl text-white">
-          {formatMxn(pesos)}
-        </p>
-        <button
-          type="button"
-          onClick={() => step(RANKING_STEP_MXN)}
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-white/12 text-xl text-mute hover:border-[#f5c542]/50 hover:text-white"
-          aria-label="Subir oferta"
-        >
-          +
-        </button>
-      </div>
-
-      <p className="mono text-center text-[10px] tracking-[0.14em] text-mute">
+      <p className="mono text-[9px] tracking-[0.14em] text-mute">
         MÍNIMO {formatMxn(range.minPesos)} · +{formatMxn(RANKING_STEP_MXN)} POR
         PASO · MÁXIMO {formatMxn(range.maxPesos)}
       </p>
 
-      <div className="space-y-2">
-        <input
-          type="search"
-          value={selected && !query ? selected.name : query}
-          onFocus={() => setOpenList(true)}
-          onChange={(event) => {
-            setQuery(event.target.value);
-            setSlug("");
-            setOpenList(true);
-          }}
-          placeholder="Busca tu proyecto..."
-          className="input-surface w-full px-4 py-3 text-sm text-white"
-        />
-        {openList && !slug ? (
-          <div className="max-h-40 overflow-auto rounded-xl border border-white/8 bg-black/25">
-            {matches.length ? (
-              matches.map((company) => (
-                <button
-                  key={company.slug}
-                  type="button"
-                  onClick={() => {
-                    setSlug(company.slug);
-                    setQuery("");
-                    setOpenList(false);
-                  }}
-                  className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm text-white hover:bg-white/6"
+      <div className="grid grid-cols-2 gap-2">
+        <div className="relative">
+          <input
+            type="search"
+            value={selected && !query ? selected.name : query}
+            onFocus={() => setOpenList(true)}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setSlug("");
+              setOpenList(true);
+            }}
+            placeholder="Proyecto"
+            className="input-surface w-full px-3 py-2 text-sm text-white"
+          />
+          {openList && !slug ? (
+            <div className="absolute inset-x-0 top-[calc(100%+4px)] z-20 max-h-36 overflow-auto rounded-xl border border-white/8 bg-[#0c100c] shadow-xl">
+              {matches.length ? (
+                matches.map((company) => (
+                  <button
+                    key={company.slug}
+                    type="button"
+                    onClick={() => {
+                      setSlug(company.slug);
+                      setQuery("");
+                      setOpenList(false);
+                    }}
+                    className="flex w-full items-center gap-2 px-2.5 py-2 text-left text-sm text-white hover:bg-white/6"
+                  >
+                    {company.iconUrl ? (
+                      <img
+                        src={company.iconUrl}
+                        alt=""
+                        className="h-6 w-6 rounded-full object-cover"
+                      />
+                    ) : (
+                      <span
+                        className="flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-semibold text-white"
+                        style={{ backgroundColor: company.iconBg }}
+                      >
+                        {company.initials}
+                      </span>
+                    )}
+                    <span className="truncate">{company.name}</span>
+                  </button>
+                ))
+              ) : (
+                <div className="space-y-2 px-3 py-3">
+                  <p className="text-sm text-mute">
+                    Ese proyecto no está en el directorio.
+                  </p>
+                  <a href="/publicar" className="btn-primary h-9 text-sm">
+                    Subirlo a TechMex
+                  </a>
+                </div>
+              )}
+              {matches.length && query.trim() ? (
+                <a
+                  href="/publicar"
+                  className="block border-t border-white/8 px-3 py-2 text-sm text-mint hover:text-white"
                 >
-                  {company.iconUrl ? (
-                    <img
-                      src={company.iconUrl}
-                      alt=""
-                      className="h-7 w-7 rounded-full object-cover"
-                    />
-                  ) : (
-                    <span
-                      className="flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-semibold text-white"
-                      style={{ backgroundColor: company.iconBg }}
-                    >
-                      {company.initials}
-                    </span>
-                  )}
-                  <span className="truncate">{company.name}</span>
-                </button>
-              ))
-            ) : (
-              <div className="space-y-2 px-3 py-3">
-                <p className="text-sm text-mute">
-                  Ese proyecto no está en el directorio.
-                </p>
-                <a href="/publicar" className="btn-primary h-10 text-sm">
-                  Subirlo a TechMex
+                  ¿No está tu proyecto? Súbelo primero
                 </a>
-              </div>
-            )}
-            {matches.length && query.trim() ? (
-              <a
-                href="/publicar"
-                className="block border-t border-white/8 px-3 py-2.5 text-sm text-mint hover:text-white"
-              >
-                ¿No está tu proyecto? Súbelo primero
-              </a>
-            ) : null}
-          </div>
-        ) : null}
+              ) : null}
+            </div>
+          ) : null}
+        </div>
 
         <input
           type="email"
           value={email}
+          onFocus={() => setOpenList(false)}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="tu@startup.mx"
-          className="input-surface w-full px-4 py-3 text-sm text-white"
+          className="input-surface w-full px-3 py-2 text-sm text-white"
         />
       </div>
 
@@ -189,7 +193,7 @@ export function RankingClaimForm({
         type="button"
         disabled={pending || !paymentsReady}
         onClick={submit}
-        className="btn-primary h-12 text-sm disabled:opacity-40"
+        className="btn-primary h-10 text-sm disabled:opacity-40"
       >
         {pending
           ? "ABRIENDO STRIPE…"
@@ -200,7 +204,7 @@ export function RankingClaimForm({
               : "Comprar el tercer lugar"}
       </button>
 
-      <p className="mono text-center text-[10px] tracking-[0.14em] text-mute">
+      <p className="mono text-center text-[9px] tracking-[0.14em] text-mute">
         {paymentsReady
           ? "PAGO SEGURO CON STRIPE"
           : "FALTAN KEYS DE STRIPE TECHMEX"}

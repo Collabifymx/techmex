@@ -24,6 +24,7 @@ export default async function HomePage() {
         index="01"
         title="RANKING"
         subtitle="De México para el mundo. Los lugares 1, 2 y 3 se compran desde $100 MXN; el máximo es el triple."
+        compact
       />
       <StartupRanking
         entries={composeRanking(companies, slots)}
