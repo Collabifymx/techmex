@@ -24,17 +24,25 @@ const eventRows = events
   )
   .join(",\n");
 
-const sql = `insert into public.companies (
+const companySql = companyRows
+  ? `insert into public.companies (
   slug, name, description, url, category, tags, city, clicks, likes, created_at, initials, icon_bg, rank_score, status
 ) values
 ${companyRows}
-on conflict (slug) do nothing;
+on conflict (slug) do nothing;`
+  : "-- Directory starts empty. New projects arrive via /publicar → submissions.";
 
-insert into public.events (
+const eventSql = eventRows
+  ? `insert into public.events (
   slug, name, description, url, tags, city, venue, starts_at, ends_at, time, price, organizer, format
 ) values
 ${eventRows}
-on conflict (slug) do nothing;
+on conflict (slug) do nothing;`
+  : "-- Events start empty. New entries arrive via /publicar → submissions.";
+
+const sql = `${companySql}
+
+${eventSql}
 `;
 
 writeFileSync(new URL("../supabase/seed.sql", import.meta.url), sql);

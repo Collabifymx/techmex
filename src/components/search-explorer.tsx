@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { CompanyRow } from "@/components/company-row";
 import { DirectoryEmptyState } from "@/components/directory-empty-state";
 import { EventCard } from "@/components/event-card";
+import { EventsEmptyState } from "@/components/events-empty-state";
 import { SearchBox } from "@/components/search-box";
 import { sortCompanies } from "@/lib/companies";
 import type { Company, TechEvent } from "@/lib/types";
@@ -130,6 +131,8 @@ export function SearchExplorer({
               eventResults.map((event) => (
                 <EventCard key={event.slug} event={event} />
               ))
+            ) : events.length === 0 ? (
+              <EventsEmptyState />
             ) : (
               <p className="surface px-5 py-10 text-center text-sm text-mute">
                 No hay eventos para esa búsqueda.

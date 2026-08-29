@@ -94,7 +94,7 @@ export function matchesQuery(
 }
 
 export function formatPlace(city?: string | null, state?: string | null) {
-  return [city, state].filter(Boolean).join(", ");
+  return [...new Set([city, state].filter(Boolean))].join(", ");
 }
 
 export function hashString(value: string) {

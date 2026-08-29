@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { EventCard } from "@/components/event-card";
+import { EventsEmptyState } from "@/components/events-empty-state";
 import { PageHero } from "@/components/page-hero";
 import { eventCities, pastEvents, upcomingEvents } from "@/lib/events";
 import { fetchEvents } from "@/lib/queries";
@@ -31,35 +32,47 @@ export default async function EventosPage() {
       </PageHero>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        <section>
-          <div className="mb-4 flex items-end justify-between">
-            <h2 className="display text-3xl text-white">PRÓXIMOS</h2>
-            <p className="mono text-[11px] tracking-[0.16em] text-mute">
-              ORDENADOS POR FECHA · {upcoming.length}
-            </p>
-          </div>
-          <div className="space-y-3">
-            {upcoming.map((event) => (
-              <EventCard key={event.slug} event={event} />
-            ))}
-          </div>
-        </section>
+        {all.length === 0 ? (
+          <EventsEmptyState />
+        ) : (
+          <>
+            <section>
+              <div className="mb-4 flex items-end justify-between">
+                <h2 className="display text-3xl text-white">PRÓXIMOS</h2>
+                <p className="mono text-[11px] tracking-[0.16em] text-mute">
+                  ORDENADOS POR FECHA · {upcoming.length}
+                </p>
+              </div>
+              <div className="space-y-3">
+                {upcoming.length ? (
+                  upcoming.map((event) => (
+                    <EventCard key={event.slug} event={event} />
+                  ))
+                ) : (
+                  <p className="surface px-5 py-10 text-center text-sm text-mute">
+                    No hay eventos próximos. Publica el siguiente.
+                  </p>
+                )}
+              </div>
+            </section>
 
-        {past.length ? (
-          <section className="mt-16">
-            <div className="mb-4 flex items-end justify-between">
-              <h2 className="display text-3xl text-white">PASADOS</h2>
-              <p className="mono text-[11px] tracking-[0.16em] text-mute">
-                ARCHIVO RECIENTE
-              </p>
-            </div>
-            <div className="space-y-3">
-              {past.map((event) => (
-                <EventCard key={event.slug} event={event} />
-              ))}
-            </div>
-          </section>
-        ) : null}
+            {past.length ? (
+              <section className="mt-16">
+                <div className="mb-4 flex items-end justify-between">
+                  <h2 className="display text-3xl text-white">PASADOS</h2>
+                  <p className="mono text-[11px] tracking-[0.16em] text-mute">
+                    ARCHIVO RECIENTE
+                  </p>
+                </div>
+                <div className="space-y-3">
+                  {past.map((event) => (
+                    <EventCard key={event.slug} event={event} />
+                  ))}
+                </div>
+              </section>
+            ) : null}
+          </>
+        )}
       </div>
     </div>
   );
