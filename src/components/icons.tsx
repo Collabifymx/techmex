@@ -2,6 +2,44 @@ type IconProps = {
   className?: string;
 };
 
+export function HeartIcon({
+  className = "h-4 w-4",
+  filled = false,
+}: IconProps & { filled?: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill={filled ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth="1.6"
+      className={className}
+      aria-hidden
+    >
+      <path d="M12 20s-7-4.4-7-9.2A3.8 3.8 0 0 1 12 7.4 3.8 3.8 0 0 1 19 10.8C19 15.6 12 20 12 20Z" />
+    </svg>
+  );
+}
+
+export function ListIcon({ className = "h-3.5 w-3.5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className={className} aria-hidden>
+      <path d="M9 6h11M9 12h11M9 18h11" strokeLinecap="round" />
+      <circle cx="5" cy="6" r="1.1" fill="currentColor" stroke="none" />
+      <circle cx="5" cy="12" r="1.1" fill="currentColor" stroke="none" />
+      <circle cx="5" cy="18" r="1.1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function ExternalLinkIcon({ className = "h-3.5 w-3.5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className={className} aria-hidden>
+      <path d="M10 5H6.5A1.5 1.5 0 0 0 5 6.5v11A1.5 1.5 0 0 0 6.5 19h11a1.5 1.5 0 0 0 1.5-1.5V14" strokeLinecap="round" />
+      <path d="M13 5h6v6M19 5l-8 8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function SearchIcon({ className = "h-4 w-4" }: IconProps) {
   return (
     <svg

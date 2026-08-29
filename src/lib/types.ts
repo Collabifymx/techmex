@@ -118,6 +118,13 @@ export type TechEvent = {
   format: EventFormat;
 };
 
+export type ProjectComment = {
+  id: string;
+  author: string;
+  body: string;
+  createdAt: string;
+};
+
 export type SortKey =
   | "random"
   | "recent"

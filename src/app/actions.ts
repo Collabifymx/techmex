@@ -151,6 +151,47 @@ export async function submitEvent(formData: FormData) {
   return { ok: true };
 }
 
+export async function likeProject(slug: string) {
+  if (!/^[a-z0-9-]+$/.test(slug)) {
+    return { ok: false, error: "Proyecto inválido." };
+  }
+
+  const { error } = await getSupabase().rpc("increment_company_likes", {
+    company_slug: slug,
+  });
+
+  if (error) {
+    return { ok: false, error: "No se pudo registrar el like." };
+  }
+
+  return { ok: true };
+}
+
+export async function submitComment(formData: FormData) {
+  const slug = String(formData.get("slug") ?? "").trim();
+  const author = String(formData.get("author") ?? "").trim();
+  const body = String(formData.get("body") ?? "").trim();
+
+  if (!/^[a-z0-9-]+$/.test(slug) || !author || !body) {
+    return { ok: false, error: "Escribe tu nombre y un comentario." };
+  }
+  if (author.length > 60 || body.length > 500) {
+    return { ok: false, error: "El comentario es demasiado largo." };
+  }
+
+  const { error } = await getSupabase().from("project_comments").insert({
+    company_slug: slug,
+    author,
+    body,
+  });
+
+  if (error) {
+    return { ok: false, error: "No se pudo publicar el comentario." };
+  }
+
+  return { ok: true };
+}
+
 export async function previewEventFromUrl(url: string) {
   try {
     const preview = await fetchEventPreview(url);

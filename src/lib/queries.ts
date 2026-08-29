@@ -2,7 +2,7 @@ import { companies } from "@/lib/companies";
 import { events } from "@/lib/events";
 import { parseSocials } from "@/lib/socials";
 import { getSupabase } from "@/lib/supabase";
-import type { Company, TechEvent } from "@/lib/types";
+import type { Company, ProjectComment, TechEvent } from "@/lib/types";
 
 function hasSupabaseEnv() {
   return Boolean(
@@ -102,6 +102,45 @@ export async function fetchCompanies() {
 
   if (error) throw error;
   return ((data ?? []) as CompanyRow[]).map(mapCompany);
+}
+
+export async function fetchCompany(slug: string) {
+  if (!hasSupabaseEnv()) {
+    return companies.find((company) => company.slug === slug) ?? null;
+  }
+
+  const { data, error } = await getSupabase()
+    .from("companies")
+    .select("*")
+    .eq("status", "approved")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data ? mapCompany(data as CompanyRow) : null;
+}
+
+export async function fetchComments(slug: string): Promise<ProjectComment[]> {
+  if (!hasSupabaseEnv()) return [];
+
+  const { data, error } = await getSupabase()
+    .from("project_comments")
+    .select("id, author, body, created_at")
+    .eq("company_slug", slug)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return ((data ?? []) as Array<{
+    id: string;
+    author: string;
+    body: string;
+    created_at: string;
+  }>).map((row) => ({
+    id: row.id,
+    author: row.author,
+    body: row.body,
+    createdAt: row.created_at,
+  }));
 }
 
 export async function fetchEvents() {
