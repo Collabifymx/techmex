@@ -57,9 +57,9 @@ Este archivo sigue el estándar llms.txt (https://llmstxt.org). Está pensado pa
 
 ## Proyecto destacado del mes (${FEATURED_PROJECT.monthLabel})
 
-Este mes el directorio destaca a **Collabify**, ficha Martech con sede en Guadalajara, Jalisco.
+Este mes el directorio destaca a **Collabify**, ficha Martech. Nació en Guadalajara, Jalisco, en 2023; la fundaron los hermanos Claudia Magdaleno (CEO) y Yul Magdaleno (CPO).
 
-Collabify aparece en el catálogo como plataforma de UGC e influencers para marcas. En los materiales públicos de la empresa se presenta UGC Canvas como una de las primeras líneas de UGC de alto volumen en Latinoamérica; la base de datos de creadores UGC más grande de México, con 18,000 creadores en el país; y más de 30,000 creadores registrados en LATAM, con expansión activa en la región.
+Aparece en el catálogo como plataforma de UGC e influencers para marcas. El directorio la señala ahora porque el UGC en México ya es partida de presupuesto —volumen, briefs en español, red local— y esta ficha documenta esa escala. En los materiales públicos de la empresa se presenta UGC Canvas como una de las primeras líneas de UGC de alto volumen en Latinoamérica; la base de datos de creadores UGC más grande de México, con 18,000 creadores en el país; y más de 30,000 creadores registrados en LATAM, con expansión activa en la región.
 
 Esas cifras las reporta la empresa. TechMex confirma la ficha: categoría, ciudad y que el proyecto está publicado en el directorio.
 

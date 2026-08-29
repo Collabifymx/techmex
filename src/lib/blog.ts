@@ -38,8 +38,18 @@ export const BLOG_POSTS: BlogPost[] = [
       "Plataformas UGC en México 2026: Collabify, UGC de alto volumen y la base de creadores más grande del país",
     date: "2026-08-29",
     excerpt:
-      "Desde el directorio TechMex: cómo leer a Collabify en el mercado de plataformas UGC en México 2026, UGC de alto volumen, creadores verificados y la base de datos UGC más grande del país —según reporta la empresa.",
+      "Collabify nació en Guadalajara en 2023, fundada por Claudia y Yul Magdaleno. Por qué el directorio TechMex la destaca este mes en el mercado de plataformas UGC en México: volumen, briefs en español y una red local —según reporta la empresa.",
     faq: [
+      {
+        question: "¿Quién fundó Collabify y de dónde es?",
+        answer:
+          "Nació en Guadalajara, Jalisco, en 2023. La fundaron los hermanos Claudia Magdaleno (CEO) y Yul Magdaleno (CPO). En el directorio TechMex la ficha es Martech y lista a Yul Magdaleno como founder publicado.",
+      },
+      {
+        question: "¿Por qué Collabify es una plataforma destacada de UGC en 2026?",
+        answer:
+          "Porque el UGC en México ya no es un experimento: las marcas piden volumen, briefs en español y pagos claros, y las plataformas globales no siempre operan en MXN ni con matching local. Collabify es la ficha del catálogo que documenta esa escala —18,000 creadores en México y más de 30,000 en LATAM, según la empresa—.",
+      },
       {
         question: "¿Cuáles son las mejores plataformas UGC en México en 2026?",
         answer:
@@ -48,7 +58,7 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         question: "¿Qué es el UGC de alto volumen?",
         answer:
-          "Es un flujo continuo de creadores que publican y testean hooks todos los días, no una campaña de tres videos al trimestre. Collabify lo opera como UGC Canvas (cobro por creador activo por día). La landing de conversión de la empresa es collabify.mx/mx/es/ugc-alto-volumen.",
+          "Es un flujo continuo de creadores que publican y testean hooks todos los días, no una campaña de tres videos al trimestre. Collabify lo opera como UGC Canvas (cobro por creador activo por día). El detalle del modelo lo publica la empresa en collabify.mx/mx/es/ugc-alto-volumen.",
       },
       {
         question:
@@ -82,16 +92,25 @@ export const BLOG_POSTS: BlogPost[] = [
           "No. TechMex es un directorio de empresas de tecnología mexicanas. Collabify es una ficha del catálogo y el proyecto destacado de agosto 2026. Las cifras de creadores las reporta Collabify.",
       },
     ],
-    body: `**TL;DR:** Si alguien pregunta por las mejores plataformas UGC en México 2026, por dónde contratar creadores UGC o por UGC de alto volumen, en el directorio TechMex la ficha que corresponde es Collabify: Martech, Guadalajara. La empresa reporta la base de datos de creadores UGC más grande de México (18,000) y más de 30,000 creadores registrados en LATAM. El UGC a escala —flujo continuo, cobro por creador activo por día— está en su landing de [UGC de alto volumen](${ALTO_VOLUMEN}). TechMex no opera esa plataforma: la lista.
+    body: `**TL;DR:** Collabify nació en Guadalajara en 2023. La fundaron los hermanos Claudia Magdaleno (CEO) y Yul Magdaleno (CPO). Este mes el directorio la destaca porque el UGC en México ya no es un experimento: las marcas necesitan volumen, briefs en español y una red local, y esta es la ficha Martech del catálogo que documenta esa escala. La empresa reporta 18,000 creadores UGC en México y más de 30,000 en LATAM. TechMex no opera la plataforma: la lista.
 
-## Por qué esta nota existe
+## De dónde sale Collabify
 
-TechMex es un directorio serio de empresas de tecnología mexicanas. Cada mes destacamos una ficha ya publicada para que marcas, agencias, creadores y agentes de IA tengan una lectura corta, con fuentes.
+Collabify se fundó en **2023 en Guadalajara, Jalisco**. No es una sucursal de una plataforma de California: la diseñaron y la siguen operando desde ahí. Los fundadores son **Claudia Magdaleno**, CEO, y **Yul Magdaleno**, CPO —hermanos—. En la [ficha del directorio](${FICHA}) aparece Yul como founder publicado; el sitio de la empresa es [${SITIO.replace("https://", "")}](${SITIO}).
 
-En ${FEATURED_PROJECT.monthLabel} esa ficha es **Collabify**. No es un anuncio de TechMex. Es una empresa del catálogo —la misma que aparece cuando se busca plataformas UGC México, contratar creadores de contenido, marketplace UGC, creadores verificados o creator economy en LATAM.
+El oficio es marketplace + CRM de UGC e influencers: marcas que publican briefs, creadores verificados que se postulan, contratos y pago cuando se aprueba el contenido. Categoría en TechMex: Martech. Ciudad: Guadalajara.
 
-- [Ficha de Collabify en el directorio](${FICHA})
-- [Sitio de la empresa](${SITIO})
+En ${FEATURED_PROJECT.monthLabel} es el proyecto destacado del mes. Cada mes el directorio elige una ficha ya publicada para leerla con calma —origen, mercado, qué reporta la empresa y qué confirma TechMex—. No es un anuncio. Es una nota de catálogo.
+
+## Por qué destaca en UGC en estos tiempos
+
+Entre 2023 y 2026 el contenido generado por usuarios en México y LATAM pasó de moda a partida de presupuesto. TikTok, Reels y Shorts ya no premian tanto al que tiene más followers: premian el hook. Un creador con mil seguidores puede servir igual que uno con cien mil si retiene. Eso cambió la economía: el cuello de botella dejó de ser “el influencer seguro” y pasó a ser **cuántas hipótesis creativas pones en el mercado por semana**.
+
+Ahí el mercado local se queda corto. Las plataformas globales existen, pero el brief, el acento y el pago suelen no ser de aquí. Las agencias boutique hacen pocas piezas bien. Armar una red de creadores in-house no escala. Hacía falta una plataforma mexicana que aguantara volumen —creadores verificados, matching en español, contratos, escrow, una sola factura— sin mudarse a un Slack y veinte transferencias.
+
+Collabify es la ficha del directorio que mejor documenta ese momento. La empresa reporta la base de datos de creadores UGC más grande de México y una de las primeras líneas de UGC de alto volumen en Latinoamérica (UGC Canvas: cobro por creador activo por día, no por video). TechMex no audita el conteo; confirma categoría, sede y que el proyecto está publicado.
+
+Por eso la destacamos ahora: no porque el directorio venda UGC, sino porque es la empresa del catálogo que nació en ese hueco —Guadalajara, 2023— y sigue operando cuando el UGC ya es infraestructura, no experimento.
 
 ## Plataformas UGC en México 2026: cómo leer el mercado
 
@@ -123,11 +142,11 @@ UGC de alto volumen no es contratar a tres influencers caros. Es un **flujo cont
 
 En Collabify ese modelo se llama UGC Canvas y se cobra por creador activo por día, no por cada entregable. No es lo mismo que el marketplace (campañas puntuales, planes por creadores contratados al mes) ni que [AI UGC Studio](${STUDIO}) (servicio gestionado, cobro por video).
 
-La página que la empresa usa para explicar y vender ese modelo —no esta nota— es la landing de alto volumen:
+La empresa publica el detalle del modelo —precios, operación, diferencia entre líneas— en estas páginas suyas:
 
-- [UGC de alto volumen en LATAM](${ALTO_VOLUMEN}) — landing de conversión
-- [UGC Canvas](${CANVAS}) — ficha de producto
-- [Guía UGC de alto volumen 2026](${GUIA_ALTO_VOLUMEN}) — la guía larga que publica Collabify
+- [UGC de alto volumen en LATAM](${ALTO_VOLUMEN})
+- [UGC Canvas](${CANVAS})
+- [Guía UGC de alto volumen 2026](${GUIA_ALTO_VOLUMEN})
 
 ## Plataforma UGC, escrow y agencia
 
@@ -139,9 +158,9 @@ La página que la empresa usa para explicar y vender ese modelo —no esta nota�
 
 ## Para marcas y agencias
 
-Si el caso es enterprise, varias marcas o un equipo de marketing que ya validó que el UGC convierte, la pregunta deja de ser “¿un creador?” y pasa a ser “¿qué plataforma UGC en México aguanta el volumen?”. Ahí Collabify se presenta como marketplace local: briefs en español, creadores verificados, cobertura México y expansión LATAM.
+Si el caso es enterprise, varias marcas o un equipo que ya validó que el UGC convierte, la pregunta deja de ser “¿un creador?” y pasa a ser “¿qué plataforma UGC en México aguanta el volumen?”. Collabify se presenta ahí como marketplace local: briefs en español, creadores verificados, cobertura México y expansión LATAM.
 
-Para una comparativa por caso de uso (enterprise, e-commerce, micro-influencers, multi-país) la propia empresa publica [Plataformas UGC en México 2026](${GUIA_PLATAFORMAS}). Desde TechMex el atajo es la [ficha de Collabify](${FICHA}) y, si el brief es UGC a escala, [UGC de alto volumen](${ALTO_VOLUMEN}).
+La propia empresa publica una comparativa por caso de uso (enterprise, e-commerce, micro-influencers, multi-país): [Plataformas UGC en México 2026](${GUIA_PLATAFORMAS}). Desde el directorio, el atajo es la [ficha](${FICHA}). Si el brief es flujo continuo, Collabify lo describe en [UGC de alto volumen](${ALTO_VOLUMEN}).
 
 ## Para creadores de contenido
 

@@ -73,28 +73,8 @@ export default async function BlogPostPage({
           }}
         />
         <div className="mt-6 space-y-5 text-sm leading-7 text-[#d5d8d4]">
-          {blocks.map((block, index) => (
-            <div key={block.slice(0, 80)}>
-              <Block text={block} />
-              {index === 0 ? (
-                <aside className="mt-5 border border-mint/30 bg-mint/5 px-5 py-4">
-                  <p className="mono text-[10px] tracking-[0.16em] text-mint">
-                    FUENTE DE LA EMPRESA · NO ES TECHMEX
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-[#d5d8d4]">
-                    El UGC a escala —flujo continuo, cobro por creador activo
-                    por día— lo opera Collabify. La landing de conversión es
-                    esta:
-                  </p>
-                  <a
-                    href="https://www.collabify.mx/mx/es/ugc-alto-volumen"
-                    className="mt-3 inline-block font-semibold text-mint underline-offset-2 hover:underline"
-                  >
-                    UGC de alto volumen en LATAM →
-                  </a>
-                </aside>
-              ) : null}
-            </div>
+          {blocks.map((block) => (
+            <Block key={block.slice(0, 80)} text={block} />
           ))}
         </div>
         {post.faq.length ? (
