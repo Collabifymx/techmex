@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
-import { previewEventFromUrl, submitEvent, submitProject } from "@/app/actions";
+import { type FormEvent, useMemo, useState } from "react";
+import { previewEventFromUrl } from "@/app/actions";
 import { EventCard } from "@/components/event-card";
+import { stripEmptyImages, validatePublishImage } from "@/lib/publish-image";
 import { normalizeHandle } from "@/lib/socials";
 import {
   COMPANY_CATEGORIES,
@@ -14,6 +15,19 @@ import type { SocialKind, SocialLink, SocialNetwork, TechEvent } from "@/lib/typ
 import { cn } from "@/lib/utils";
 
 type Tab = "project" | "event";
+type PublishResponse = { ok?: boolean; error?: string };
+
+async function postPublish(formData: FormData): Promise<PublishResponse> {
+  const response = await fetch("/api/publish", {
+    method: "POST",
+    body: formData,
+  });
+  try {
+    return (await response.json()) as PublishResponse;
+  } catch {
+    return { ok: false, error: "No se pudo enviar. Intenta de nuevo." };
+  }
+}
 
 export function PublishForm() {
   const router = useRouter();
@@ -145,28 +159,78 @@ function ProjectForm({ onDone }: { onDone: () => void }) {
     setFounderPhotoPreview(URL.createObjectURL(file));
   }
 
-  async function handleSubmit(formData: FormData) {
+  function pickImage(
+    file: File | undefined,
+    label: string,
+    apply: (next: File | undefined) => void,
+    input: HTMLInputElement,
+  ) {
+    if (!file) {
+      apply(undefined);
+      return;
+    }
+    const invalid = validatePublishImage(file, label);
+    if (invalid) {
+      setError(invalid);
+      input.value = "";
+      apply(undefined);
+      return;
+    }
+    setError(null);
+    apply(file);
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
     const collected = collectSocials(socialEnabled, socialValues);
     if (collected.error) {
       setError(collected.error);
       return;
     }
 
+    stripEmptyImages(formData, ["icon", "founderPhoto"]);
+    for (const [key, label] of [
+      ["icon", "El icono"],
+      ["founderPhoto", "La foto del founder"],
+    ] as const) {
+      const file = formData.get(key);
+      if (file instanceof File && file.size > 0) {
+        const invalid = validatePublishImage(file, label);
+        if (invalid) {
+          setError(invalid);
+          return;
+        }
+      }
+    }
+
+    formData.set("kind", "project");
     formData.set("category", category);
     formData.set("socials", JSON.stringify(collected.socials));
     setPending(true);
     setError(null);
-    const result = await submitProject(formData);
-    setPending(false);
-    if (!result.ok) {
-      setError(result.error ?? "No se pudo enviar.");
-      return;
+    try {
+      const result = await postPublish(formData);
+      if (!result.ok) {
+        setError(result.error ?? "No se pudo enviar.");
+        return;
+      }
+      onDone();
+    } catch {
+      setError("No se pudo enviar. Revisa tu conexión e inténtalo de nuevo.");
+    } finally {
+      setPending(false);
     }
-    onDone();
   }
 
   return (
-    <form action={handleSubmit}>
+    <form
+      method="post"
+      action="/api/publish"
+      encType="multipart/form-data"
+      onSubmit={handleSubmit}
+    >
+      <input type="hidden" name="kind" value="project" />
       <div className="space-y-7 px-4 py-6 sm:px-7">
         <div className="grid gap-5 sm:grid-cols-2">
           <Field label="Nombre del proyecto *">
@@ -241,7 +305,12 @@ function ProjectForm({ onDone }: { onDone: () => void }) {
                 accept="image/png,image/jpeg,image/webp,image/gif"
                 className="sr-only"
                 onChange={(event) =>
-                  handleFounderPhotoChange(event.target.files?.[0])
+                  pickImage(
+                    event.target.files?.[0],
+                    "La foto del founder",
+                    handleFounderPhotoChange,
+                    event.target,
+                  )
                 }
               />
             </label>
@@ -341,7 +410,14 @@ function ProjectForm({ onDone }: { onDone: () => void }) {
                 name="icon"
                 accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
                 className="sr-only"
-                onChange={(event) => handleIconChange(event.target.files?.[0])}
+                onChange={(event) =>
+                  pickImage(
+                    event.target.files?.[0],
+                    "El icono",
+                    handleIconChange,
+                    event.target,
+                  )
+                }
               />
             </label>
           </div>
@@ -441,7 +517,10 @@ function EventForm({ onDone }: { onDone: () => void }) {
     if (result.preview.url) setLink(result.preview.url);
   }
 
-  async function handleSubmit(formData: FormData) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    formData.set("kind", "event");
     formData.set("name", name);
     formData.set("url", link);
     formData.set("description", description);
@@ -454,17 +533,23 @@ function EventForm({ onDone }: { onDone: () => void }) {
     formData.set("ogImage", ogImage);
     setPending(true);
     setError(null);
-    const result = await submitEvent(formData);
-    setPending(false);
-    if (!result.ok) {
-      setError(result.error ?? "No se pudo enviar.");
-      return;
+    try {
+      const result = await postPublish(formData);
+      if (!result.ok) {
+        setError(result.error ?? "No se pudo enviar.");
+        return;
+      }
+      onDone();
+    } catch {
+      setError("No se pudo enviar. Revisa tu conexión e inténtalo de nuevo.");
+    } finally {
+      setPending(false);
     }
-    onDone();
   }
 
   return (
-    <form action={handleSubmit}>
+    <form method="post" action="/api/publish" onSubmit={handleSubmit}>
+      <input type="hidden" name="kind" value="event" />
       <div className="space-y-7 px-4 py-6 sm:px-7">
         <div>
           <Field label="Pega el link del evento (Luma, Meetup, etc.)">
@@ -625,7 +710,12 @@ function FormFooter({
       </div>
       {error ? (
         <p className="mt-3 text-center text-sm text-signal">{error}</p>
-      ) : null}
+      ) : (
+        <p className="mt-3 text-center text-xs text-mute">
+          Si no envía, inténtalo sin fotos. Las fotos del iPhone a veces pesan
+          más de 1 MB.
+        </p>
+      )}
     </div>
   );
 }
