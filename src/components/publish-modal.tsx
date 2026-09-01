@@ -15,91 +15,63 @@ import { cn } from "@/lib/utils";
 
 type Tab = "project" | "event";
 
-export function PublishModal() {
+export function PublishForm() {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("project");
   const [submitted, setSubmitted] = useState(false);
 
-  function close() {
-    if (window.history.length > 1) {
-      router.back();
-      return;
-    }
-    router.push("/");
+  if (submitted) {
+    return (
+      <div className="surface px-6 py-14 text-center sm:px-10">
+        <p className="display text-3xl text-white">SOLICITUD ENVIADA</p>
+        <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-mute">
+          La revisamos. Si encaja en TechMex, la publicamos en unos días.
+        </p>
+        <button
+          type="button"
+          onClick={() => router.push("/directorio")}
+          className="mono mt-6 inline-flex min-h-12 items-center rounded-full border border-mint/70 px-5 text-[11px] tracking-[0.18em] text-mint"
+        >
+          VOLVER AL DIRECTORIO
+        </button>
+      </div>
+    );
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 px-4 py-6"
-      onClick={close}
-    >
-      <div
-        className="surface relative max-h-[90vh] w-full max-w-3xl overflow-y-auto"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="flex items-center justify-between border-b border-line px-5 py-4 sm:px-7">
-          <p className="mono text-[11px] tracking-[0.18em] text-mute">
-            04 / PUBLICAR
-          </p>
+    <div className="surface overflow-visible">
+      <div className="grid grid-cols-2 border-b border-line">
+        {(
+          [
+            ["project", "PROYECTO"],
+            ["event", "EVENTO"],
+          ] as const
+        ).map(([key, label]) => (
           <button
+            key={key}
             type="button"
-            onClick={close}
-            className="mono text-[11px] tracking-[0.16em] text-mute hover:text-white"
-          >
-            CERRAR
-          </button>
-        </div>
-
-        {submitted ? (
-          <div className="px-6 py-14 text-center sm:px-10">
-            <p className="display text-3xl text-white">SOLICITUD ENVIADA</p>
-            <p className="mx-auto mt-3 max-w-md text-sm text-mute">
-              La revisamos a mano. Si encaja en Tech México, la publicamos en
-              unos días.
-            </p>
-            <button
-              type="button"
-              onClick={() => router.push("/directorio")}
-              className="mono mt-6 inline-flex rounded-full border border-mint/70 px-5 py-2 text-[11px] tracking-[0.18em] text-mint"
-            >
-              VOLVER AL DIRECTORIO
-            </button>
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-2 border-b border-line">
-              {(
-                [
-                  ["project", "PROYECTO"],
-                  ["event", "EVENTO"],
-                ] as const
-              ).map(([key, label]) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => setTab(key)}
-                  className={cn(
-                    "mono px-4 py-3 text-[11px] tracking-[0.18em]",
-                    tab === key
-                      ? "border-b-2 border-mint text-mint"
-                      : "border-b-2 border-transparent text-mute hover:text-white",
-                  )}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-            {tab === "project" ? (
-              <ProjectForm onDone={() => setSubmitted(true)} />
-            ) : (
-              <EventForm onDone={() => setSubmitted(true)} />
+            onClick={() => setTab(key)}
+            className={cn(
+              "mono min-h-12 px-4 text-[11px] tracking-[0.18em]",
+              tab === key
+                ? "border-b-2 border-mint text-mint"
+                : "border-b-2 border-transparent text-mute hover:text-white",
             )}
-          </>
-        )}
+          >
+            {label}
+          </button>
+        ))}
       </div>
+      {tab === "project" ? (
+        <ProjectForm onDone={() => setSubmitted(true)} />
+      ) : (
+        <EventForm onDone={() => setSubmitted(true)} />
+      )}
     </div>
   );
 }
+
+export const PublishModal = PublishForm;
 
 const EMPTY_SOCIALS: Record<SocialNetwork, Record<SocialKind, string>> = {
   instagram: { personal: "", business: "" },
@@ -195,8 +167,8 @@ function ProjectForm({ onDone }: { onDone: () => void }) {
 
   return (
     <form action={handleSubmit}>
-      <div className="space-y-6 px-5 py-6 sm:px-7">
-        <div className="grid gap-4 sm:grid-cols-2">
+      <div className="space-y-7 px-4 py-6 sm:px-7">
+        <div className="grid gap-5 sm:grid-cols-2">
           <Field label="Nombre del proyecto *">
             <input required name="name" placeholder="Ej. Mi SaaS" className={inputClass} />
           </Field>
@@ -376,7 +348,7 @@ function ProjectForm({ onDone }: { onDone: () => void }) {
           <Field label="Descripción" className="sm:col-span-2">
             <textarea
               name="description"
-              rows={3}
+              rows={5}
               placeholder="Qué hace tu proyecto, en una o dos oraciones"
               className={`${inputClass} resize-y !rounded-[20px]`}
             />
@@ -493,7 +465,7 @@ function EventForm({ onDone }: { onDone: () => void }) {
 
   return (
     <form action={handleSubmit}>
-      <div className="space-y-6 px-5 py-6 sm:px-7">
+      <div className="space-y-7 px-4 py-6 sm:px-7">
         <div>
           <Field label="Pega el link del evento (Luma, Meetup, etc.)">
             <div className="flex flex-col gap-2 sm:flex-row">
@@ -512,7 +484,7 @@ function EventForm({ onDone }: { onDone: () => void }) {
                 type="button"
                 onClick={importFromLink}
                 disabled={!link || loadingLink}
-                className="mono shrink-0 rounded-full border border-mint/70 px-4 py-2.5 text-[11px] tracking-[0.16em] text-mint disabled:opacity-50"
+                className="mono min-h-12 shrink-0 rounded-full border border-mint/70 px-4 text-[11px] tracking-[0.16em] text-mint disabled:opacity-50"
               >
                 {loadingLink ? "LEYENDO..." : "TRAER DATOS"}
               </button>
@@ -634,19 +606,19 @@ function FormFooter({
   const router = useRouter();
 
   return (
-    <div className="border-t border-line px-5 py-5 sm:px-7">
-      <div className="grid grid-cols-2 gap-3">
+    <div className="border-t border-line px-4 py-5 sm:px-7">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <button
           type="button"
           onClick={() => router.push("/")}
-          className="mono rounded-full border border-white/20 px-4 py-3 text-[11px] tracking-[0.16em] text-white"
+          className="mono min-h-12 rounded-full border border-white/20 px-4 text-[11px] tracking-[0.16em] text-white"
         >
           CANCELAR
         </button>
         <button
           type="submit"
           disabled={pending}
-          className="mono rounded-full border border-mint/70 px-4 py-3 text-[11px] tracking-[0.16em] text-mint disabled:opacity-60"
+          className="mono min-h-12 rounded-full border border-mint/70 px-4 text-[11px] tracking-[0.16em] text-mint disabled:opacity-60"
         >
           {pending ? "ENVIANDO..." : "ENVIAR A REVISIÓN"}
         </button>
@@ -676,4 +648,4 @@ function Field({
 }
 
 const inputClass =
-  "input-surface w-full px-4 py-2.5 text-sm text-white outline-none placeholder:text-mute";
+  "input-surface w-full px-4 py-3 text-base text-white outline-none placeholder:text-mute";

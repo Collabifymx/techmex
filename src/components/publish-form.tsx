@@ -1,1 +1,1 @@
-export { PublishModal as PublishForm } from "@/components/publish-modal";
+export { PublishForm, PublishModal } from "@/components/publish-modal";
