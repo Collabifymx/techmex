@@ -4,19 +4,29 @@ import { publishEvent, publishProject } from "@/lib/publish";
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
+function json(result: { ok: boolean; error?: string }, status = result.ok ? 200 : 400) {
+  return NextResponse.json(result, { status });
+}
+
 export async function POST(request: Request) {
+  let formData: FormData;
   try {
-    const formData = await request.formData();
+    formData = await request.formData();
+  } catch (error) {
+    console.error("POST /api/publish formData", error);
+    return json({
+      ok: false,
+      error: "El archivo es muy pesado. Inténtalo sin fotos.",
+    });
+  }
+
+  try {
     const kind = String(formData.get("kind") ?? "project");
     const result =
       kind === "event" ? await publishEvent(formData) : await publishProject(formData);
-
-    return NextResponse.json(result, { status: result.ok ? 200 : 400 });
+    return json(result);
   } catch (error) {
     console.error("POST /api/publish", error);
-    return NextResponse.json(
-      { ok: false, error: "No se pudo enviar. Intenta de nuevo." },
-      { status: 400 },
-    );
+    return json({ ok: false, error: "No se pudo enviar. Intenta de nuevo." });
   }
 }

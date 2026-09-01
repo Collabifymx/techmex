@@ -1,4 +1,8 @@
-import { resolveImageType, validatePublishImage } from "@/lib/publish-image";
+import {
+  firstImageFile,
+  resolveImageType,
+  validatePublishImage,
+} from "@/lib/publish-image";
 import { parseSocialsFromJson } from "@/lib/socials";
 import { getSupabase } from "@/lib/supabase";
 import { COMPANY_CATEGORIES } from "@/lib/types";
@@ -14,14 +18,43 @@ function validCategory(category: string) {
     : null;
 }
 
-async function uploadPublicImage(file: File, label: string) {
+function clip(value: string, max: number) {
+  return value.length > max ? value.slice(0, max).trim() : value;
+}
+
+function normalizeEmail(raw: string) {
+  let value = raw.trim().replace(/^mailto:/i, "");
+  const angled = value.match(/<([^<>@\s]+@[^<>@\s]+)>/);
+  if (angled) value = angled[1];
+  value = value.replace(/\s+/g, "").toLowerCase();
+  if (value.length > 254) return null;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return null;
+  return value;
+}
+
+function parseDateOnly(raw: string) {
+  const match = raw.trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
+    return null;
+  }
+  return `${match[1]}-${match[2]}-${match[3]}`;
+}
+
+async function tryUploadPublicImage(file: File, label: string) {
   const typeError = validatePublishImage(file, label);
-  if (typeError) throw new Error(typeError);
+  if (typeError) return null;
 
   const contentType = resolveImageType(file);
-  if (!contentType) {
-    throw new Error(`${label} tiene que ser PNG, JPG, WebP, GIF o SVG.`);
-  }
+  if (!contentType) return null;
 
   const ext =
     contentType === "image/svg+xml"
@@ -30,34 +63,45 @@ async function uploadPublicImage(file: File, label: string) {
         ? "jpg"
         : contentType.split("/")[1] || "png";
   const path = `${crypto.randomUUID()}.${ext}`;
-  const supabase = getSupabase();
-  const { error } = await supabase.storage.from("project-icons").upload(path, file, {
-    contentType,
-    upsert: false,
-  });
 
-  if (error) {
-    console.error("project-icons upload", error);
-    throw new Error(`No se pudo subir ${label.toLowerCase()}.`);
+  try {
+    const supabase = getSupabase();
+    const { error } = await supabase.storage
+      .from("project-icons")
+      .upload(path, file, {
+        contentType,
+        upsert: false,
+      });
+
+    if (error) {
+      console.error("project-icons upload", error);
+      return null;
+    }
+
+    return supabase.storage.from("project-icons").getPublicUrl(path).data
+      .publicUrl;
+  } catch (error) {
+    console.error("project-icons upload failed", error);
+    return null;
   }
-
-  return supabase.storage.from("project-icons").getPublicUrl(path).data.publicUrl;
 }
 
 export async function publishProject(formData: FormData): Promise<PublishResult> {
   try {
-    const name = String(formData.get("name") ?? "").trim();
+    const name = clip(String(formData.get("name") ?? "").trim(), 200);
     const url = String(formData.get("url") ?? "").trim();
-    const email = String(formData.get("email") ?? "").trim();
-    const description = String(formData.get("description") ?? "").trim();
+    const emailRaw = String(formData.get("email") ?? "").trim();
+    const email = normalizeEmail(emailRaw);
+    const description = clip(String(formData.get("description") ?? "").trim(), 4000);
     const category = String(formData.get("category") ?? "").trim();
-    const city = String(formData.get("city") ?? "").trim();
-    const state = String(formData.get("state") ?? "").trim();
-    const founderName = String(formData.get("founderName") ?? "").trim();
-    const icon = formData.get("icon");
-    const founderPhoto = formData.get("founderPhoto");
+    const city = clip(String(formData.get("city") ?? "").trim(), 80);
+    const state = clip(String(formData.get("state") ?? "").trim(), 80);
+    const founderName = clip(String(formData.get("founderName") ?? "").trim(), 200);
     const socials = parseSocialsFromJson(String(formData.get("socials") ?? ""));
 
+    if (emailRaw && !email) {
+      return { ok: false, error: "Ese correo no se entiende." };
+    }
     if (!name || !url || !email || !city || !state || !founderName) {
       return { ok: false, error: "Faltan datos esenciales." };
     }
@@ -71,24 +115,12 @@ export async function publishProject(formData: FormData): Promise<PublishResult>
       };
     }
 
-    let iconUrl: string | null = null;
-    let founderPhotoUrl: string | null = null;
-    if (icon instanceof File && icon.size > 0) {
-      const invalid = validatePublishImage(icon, "El icono");
-      if (invalid) return { ok: false, error: invalid };
-      iconUrl = await uploadPublicImage(icon, "El icono");
-    }
-    if (founderPhoto instanceof File && founderPhoto.size > 0) {
-      const invalid = validatePublishImage(
-        founderPhoto,
-        "La foto del founder",
-      );
-      if (invalid) return { ok: false, error: invalid };
-      founderPhotoUrl = await uploadPublicImage(
-        founderPhoto,
-        "La foto del founder",
-      );
-    }
+    const icon = firstImageFile(formData, "icon");
+    const founderPhoto = firstImageFile(formData, "founderPhoto");
+    const iconUrl = icon ? await tryUploadPublicImage(icon, "El icono") : null;
+    const founderPhotoUrl = founderPhoto
+      ? await tryUploadPublicImage(founderPhoto, "La foto del founder")
+      : null;
 
     const { error } = await getSupabase().from("submissions").insert({
       kind: "project",
@@ -115,26 +147,29 @@ export async function publishProject(formData: FormData): Promise<PublishResult>
     console.error("publishProject failed", error);
     return {
       ok: false,
-      error:
-        error instanceof Error ? error.message : "No se pudo enviar. Intenta de nuevo.",
+      error: "No se pudo enviar. Intenta de nuevo.",
     };
   }
 }
 
 export async function publishEvent(formData: FormData): Promise<PublishResult> {
   try {
-    const name = String(formData.get("name") ?? "").trim();
+    const name = clip(String(formData.get("name") ?? "").trim(), 200);
     const url = String(formData.get("url") ?? "").trim();
-    const email = String(formData.get("email") ?? "").trim();
-    const description = String(formData.get("description") ?? "").trim();
-    const city = String(formData.get("city") ?? "").trim();
-    const state = String(formData.get("state") ?? "").trim();
-    const venue = String(formData.get("venue") ?? "").trim();
-    const address = String(formData.get("address") ?? "").trim();
-    const startsAt = String(formData.get("startsAt") ?? "").trim();
-    const time = String(formData.get("time") ?? "").trim();
-    const ogImage = String(formData.get("ogImage") ?? "").trim();
+    const emailRaw = String(formData.get("email") ?? "").trim();
+    const email = normalizeEmail(emailRaw);
+    const description = clip(String(formData.get("description") ?? "").trim(), 4000);
+    const city = clip(String(formData.get("city") ?? "").trim(), 80);
+    const state = clip(String(formData.get("state") ?? "").trim(), 80);
+    const venue = clip(String(formData.get("venue") ?? "").trim(), 200);
+    const address = clip(String(formData.get("address") ?? "").trim(), 300);
+    const startsAt = parseDateOnly(String(formData.get("startsAt") ?? ""));
+    const time = clip(String(formData.get("time") ?? "").trim(), 20);
+    const ogImage = clip(String(formData.get("ogImage") ?? "").trim(), 500);
 
+    if (emailRaw && !email) {
+      return { ok: false, error: "Ese correo no se entiende." };
+    }
     if (!email) {
       return { ok: false, error: "Necesitamos un correo de contacto." };
     }
@@ -165,7 +200,7 @@ export async function publishEvent(formData: FormData): Promise<PublishResult> {
       state: state || null,
       venue: venue || null,
       address: address || null,
-      starts_at: startsAt || null,
+      starts_at: startsAt,
       starts_time: time || null,
       og_image: ogImage || null,
     });
@@ -180,8 +215,7 @@ export async function publishEvent(formData: FormData): Promise<PublishResult> {
     console.error("publishEvent failed", error);
     return {
       ok: false,
-      error:
-        error instanceof Error ? error.message : "No se pudo enviar. Intenta de nuevo.",
+      error: "No se pudo enviar. Intenta de nuevo.",
     };
   }
 }

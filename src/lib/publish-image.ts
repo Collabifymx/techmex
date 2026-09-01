@@ -1,15 +1,19 @@
 export const MAX_IMAGE_BYTES = 1_048_576;
 
-const IMAGE_TYPES = new Set([
-  "image/png",
-  "image/jpeg",
-  "image/webp",
-  "image/gif",
-  "image/svg+xml",
+const IMAGE_TYPES = new Map([
+  ["image/png", "image/png"],
+  ["image/x-png", "image/png"],
+  ["image/jpeg", "image/jpeg"],
+  ["image/jpg", "image/jpeg"],
+  ["image/pjpeg", "image/jpeg"],
+  ["image/webp", "image/webp"],
+  ["image/gif", "image/gif"],
+  ["image/svg+xml", "image/svg+xml"],
 ]);
 
 export function resolveImageType(file: { type: string; name: string }) {
-  if (IMAGE_TYPES.has(file.type)) return file.type;
+  const mapped = IMAGE_TYPES.get(file.type.toLowerCase());
+  if (mapped) return mapped;
 
   const name = file.name.toLowerCase();
   if (name.endsWith(".png")) return "image/png";
@@ -37,11 +41,17 @@ export function validatePublishImage(
   return null;
 }
 
+export function firstImageFile(formData: FormData, key: string) {
+  for (const value of formData.getAll(key)) {
+    if (value instanceof File && value.size > 0) return value;
+  }
+  return null;
+}
+
 export function stripEmptyImages(formData: FormData, keys: string[]) {
   for (const key of keys) {
-    const value = formData.get(key);
-    if (value instanceof File && value.size === 0) {
-      formData.delete(key);
-    }
+    const keep = firstImageFile(formData, key);
+    formData.delete(key);
+    if (keep) formData.set(key, keep);
   }
 }

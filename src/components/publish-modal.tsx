@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type FormEvent, useMemo, useState } from "react";
+import { type FormEvent, useMemo, useRef, useState } from "react";
 import { previewEventFromUrl } from "@/app/actions";
 import { EventCard } from "@/components/event-card";
 import { stripEmptyImages, validatePublishImage } from "@/lib/publish-image";
@@ -22,6 +22,12 @@ async function postPublish(formData: FormData): Promise<PublishResponse> {
     method: "POST",
     body: formData,
   });
+  if (response.status === 413) {
+    return {
+      ok: false,
+      error: "El archivo es muy pesado. Inténtalo sin fotos.",
+    };
+  }
   try {
     return (await response.json()) as PublishResponse;
   } catch {
@@ -136,6 +142,7 @@ function ProjectForm({ onDone }: { onDone: () => void }) {
     tiktok: false,
   });
   const [socialValues, setSocialValues] = useState(EMPTY_SOCIALS);
+  const submitting = useRef(false);
 
   function handleIconChange(file: File | undefined) {
     if (iconPreview) URL.revokeObjectURL(iconPreview);
@@ -182,6 +189,7 @@ function ProjectForm({ onDone }: { onDone: () => void }) {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting.current) return;
     const formData = new FormData(event.currentTarget);
     const collected = collectSocials(socialEnabled, socialValues);
     if (collected.error) {
@@ -195,18 +203,15 @@ function ProjectForm({ onDone }: { onDone: () => void }) {
       ["founderPhoto", "La foto del founder"],
     ] as const) {
       const file = formData.get(key);
-      if (file instanceof File && file.size > 0) {
-        const invalid = validatePublishImage(file, label);
-        if (invalid) {
-          setError(invalid);
-          return;
-        }
+      if (file instanceof File && file.size > 0 && validatePublishImage(file, label)) {
+        formData.delete(key);
       }
     }
 
     formData.set("kind", "project");
     formData.set("category", category);
     formData.set("socials", JSON.stringify(collected.socials));
+    submitting.current = true;
     setPending(true);
     setError(null);
     try {
@@ -219,6 +224,7 @@ function ProjectForm({ onDone }: { onDone: () => void }) {
     } catch {
       setError("No se pudo enviar. Revisa tu conexión e inténtalo de nuevo.");
     } finally {
+      submitting.current = false;
       setPending(false);
     }
   }
@@ -458,6 +464,7 @@ function ProjectForm({ onDone }: { onDone: () => void }) {
 }
 
 function EventForm({ onDone }: { onDone: () => void }) {
+  const submitting = useRef(false);
   const [pending, setPending] = useState(false);
   const [loadingLink, setLoadingLink] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -519,6 +526,7 @@ function EventForm({ onDone }: { onDone: () => void }) {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting.current) return;
     const formData = new FormData(event.currentTarget);
     formData.set("kind", "event");
     formData.set("name", name);
@@ -531,6 +539,7 @@ function EventForm({ onDone }: { onDone: () => void }) {
     formData.set("startsAt", startsAt);
     formData.set("time", time);
     formData.set("ogImage", ogImage);
+    submitting.current = true;
     setPending(true);
     setError(null);
     try {
@@ -543,6 +552,7 @@ function EventForm({ onDone }: { onDone: () => void }) {
     } catch {
       setError("No se pudo enviar. Revisa tu conexión e inténtalo de nuevo.");
     } finally {
+      submitting.current = false;
       setPending(false);
     }
   }
